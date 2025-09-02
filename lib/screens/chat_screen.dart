@@ -87,16 +87,29 @@ class _ChatScreenState extends State<ChatScreen> {
 
     _scrollToBottom();
 
+    final stopwatch = Stopwatch()..start();
+
     try {
       final response = await _llamaService.generateResponse(prompt);
+      stopwatch.stop();
+      
       setState(() {
-        // Replace the "Thinking..." message with the actual response
-        _messages.last = ChatMessage(text: response, isUser: false);
+        // Replace the "Thinking..." message with the actual response including timing
+        _messages.last = ChatMessage(
+          text: response, 
+          isUser: false,
+          responseTime: stopwatch.elapsed,
+        );
       });
     } catch (e) {
+      stopwatch.stop();
       setState(() {
         // Replace the "Thinking..." message with the error
-        _messages.last = ChatMessage(text: "Error: $e", isUser: false);
+        _messages.last = ChatMessage(
+          text: "Error: $e", 
+          isUser: false,
+          responseTime: stopwatch.elapsed,
+        );
       });
     } finally {
       setState(() {
@@ -272,15 +285,47 @@ class _MessageBubble extends StatelessWidget {
               : Theme.of(context).colorScheme.secondaryContainer,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: SelectableText(
-          message.text,
-          style: TextStyle(
-            color: message.isUser
-                ? Theme.of(context).colorScheme.onPrimary
-                : Theme.of(context).colorScheme.onSecondaryContainer,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SelectableText(
+              message.text,
+              style: TextStyle(
+                color: message.isUser
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).colorScheme.onSecondaryContainer,
+              ),
+            ),
+            if (!message.isUser && message.responseTime != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'Response time: ${_formatDuration(message.responseTime!)}',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: (message.isUser
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSecondaryContainer)
+                        .withOpacity(0.7),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
+  }
+
+  String _formatDuration(Duration duration) {
+    if (duration.inSeconds >= 60) {
+      final minutes = duration.inMinutes;
+      final seconds = duration.inSeconds % 60;
+      return '${minutes}m ${seconds}s';
+    } else if (duration.inSeconds >= 1) {
+      return '${duration.inSeconds}.${(duration.inMilliseconds % 1000) ~/ 100}s';
+    } else {
+      return '${duration.inMilliseconds}ms';
+    }
   }
 }
