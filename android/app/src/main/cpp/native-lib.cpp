@@ -19,6 +19,8 @@ struct llama_context_wrapper {
     llama_context* context = nullptr;
     llama_sampler* sampler = nullptr;
     llama_memory_t memory = nullptr;
+    llama_batch batch = {0};  // Reusable batch for efficiency
+    std::vector<llama_seq_id> seq_ids;  // Buffer for sequence IDs
     std::vector<llama_token> conversation_tokens;
     int n_past = 0;  // Track position in conversation
     bool conversation_started = false;
@@ -28,6 +30,10 @@ struct llama_context_wrapper {
     }
     
     void cleanup() {
+        if (batch.token) {
+            llama_batch_free(batch);
+            batch = {0};
+        }
         if (sampler) {
             llama_sampler_free(sampler);
             sampler = nullptr;
@@ -122,6 +128,72 @@ char* string_to_char_ptr(const std::string& s) {
     return pc;
 }
 
+// Helper function to clear and reset batch for reuse
+void clear_batch(llama_batch& batch) {
+    batch.n_tokens = 0;
+}
+
+// Helper function to add a token to the batch efficiently
+bool add_token_to_batch(llama_batch& batch, llama_token token, llama_pos pos, 
+                       std::vector<llama_seq_id>& seq_ids, bool get_logits = false) {
+    if (batch.n_tokens >= 512) {  // Max batch size
+        return false;
+    }
+    
+    const int idx = batch.n_tokens;
+    batch.token[idx] = token;
+    batch.pos[idx] = pos;
+    batch.n_seq_id[idx] = 1;  // Number of sequences this token belongs to
+    
+    // Ensure seq_ids buffer has enough space
+    if (seq_ids.size() <= (size_t)idx) {
+        seq_ids.resize(idx + 1);
+    }
+    seq_ids[idx] = 0;  // Use sequence 0
+    batch.seq_id[idx] = &seq_ids[idx];  // Point to our sequence ID
+    
+    batch.logits[idx] = get_logits ? 1 : 0;
+    batch.n_tokens++;
+    
+    return true;
+}
+
+// Helper function to process tokens in efficient batches
+int process_tokens_in_batches(llama_context* ctx, llama_batch& batch, 
+                             const std::vector<llama_token>& tokens, 
+                             std::vector<llama_seq_id>& seq_ids,
+                             int start_pos, bool get_logits_for_last = true) {
+    const int batch_size = 512;
+    int processed = 0;
+    
+    for (size_t i = 0; i < tokens.size(); i += batch_size) {
+        clear_batch(batch);
+        
+        const int chunk_size = std::min(batch_size, (int)(tokens.size() - i));
+        
+        // Add tokens to batch
+        for (int j = 0; j < chunk_size; j++) {
+            const bool is_last_token = (i + j == tokens.size() - 1);
+            const bool get_logits = get_logits_for_last && is_last_token;
+            
+            if (!add_token_to_batch(batch, tokens[i + j], start_pos + processed + j, seq_ids, get_logits)) {
+                LOGE("Failed to add token to batch");
+                return -1;
+            }
+        }
+        
+        // Process this batch
+        if (llama_decode(ctx, batch) != 0) {
+            LOGE("Failed to decode batch at chunk %zu", i / batch_size);
+            return -1;
+        }
+        
+        processed += chunk_size;
+    }
+    
+    return processed;
+}
+
 extern "C" {
     // ---- FFI Functions Exposed to Dart ----
 
@@ -179,6 +251,18 @@ extern "C" {
             delete wrapper;
             return nullptr;
         }
+
+        // Initialize reusable batch (max 512 tokens, no embeddings, 1 sequence)
+        wrapper->batch = llama_batch_init(512, 0, 1);
+        if (wrapper->batch.token == nullptr) {
+            LOGE("Failed to create batch");
+            wrapper->cleanup();
+            delete wrapper;
+            return nullptr;
+        }
+        
+        // Initialize sequence IDs buffer
+        wrapper->seq_ids.resize(512, 0);  // Initialize with sequence 0 for all tokens
 
         LOGI("Model loaded successfully");
         return wrapper;
@@ -240,19 +324,26 @@ extern "C" {
             prompt_tokens.end()
         );
 
-        // Create batch for prompt processing using helper function
-        llama_batch batch = llama_batch_get_one(prompt_tokens.data(), n_prompt_tokens);
+        // Process prompt tokens efficiently in batches
+        LOGI("Processing %d prompt tokens in batches", n_prompt_tokens);
+        int processed = process_tokens_in_batches(
+            wrapper->context, 
+            wrapper->batch, 
+            prompt_tokens, 
+            wrapper->seq_ids,  // Pass sequence IDs buffer
+            wrapper->n_past, 
+            true  // get logits for last token
+        );
         
-        // Process prompt batch
-        if (llama_decode(wrapper->context, batch) != 0) {
-            LOGE("Failed to decode prompt");
-            return string_to_char_ptr("Failed to decode prompt");
+        if (processed != n_prompt_tokens) {
+            LOGE("Failed to process prompt tokens: processed %d/%d", processed, n_prompt_tokens);
+            return string_to_char_ptr("Failed to process prompt");
         }
         
         wrapper->n_past += n_prompt_tokens;
-        LOGI("Processed prompt, n_past = %d", wrapper->n_past);
+        LOGI("Processed prompt efficiently, n_past = %d", wrapper->n_past);
 
-        // Generation parameters - reduced for faster response
+        // Generation parameters - optimized for mobile
         const int n_predict = 50;  // Max tokens to generate
         const llama_token eos_token = llama_vocab_eos(vocab);
         const llama_token eot_token = llama_vocab_eot(vocab);
@@ -260,9 +351,9 @@ extern "C" {
         std::string response = "";
         std::string accumulated_text = "";  // Buffer to check for end patterns
         
-        LOGI("Starting generation loop, max tokens: %d", n_predict);
+        LOGI("Starting efficient generation loop, max tokens: %d", n_predict);
         
-        // Generation loop with proper sampling
+        // Efficient generation loop with single reusable batch
         for (int i = 0; i < n_predict; i++) {
             // Sample next token using the sampler chain
             llama_token new_token = llama_sampler_sample(wrapper->sampler, wrapper->context, -1);
@@ -320,14 +411,18 @@ extern "C" {
                 }
             }
 
-            // Add new token to conversation and prepare for next iteration
+            // Add new token to conversation
             wrapper->conversation_tokens.push_back(new_token);
             
-            // Create batch with single token for next iteration
-            batch = llama_batch_get_one(&new_token, 1);
+            // EFFICIENT: Reuse existing batch instead of creating new ones
+            clear_batch(wrapper->batch);
+            if (!add_token_to_batch(wrapper->batch, new_token, wrapper->n_past, wrapper->seq_ids, true)) {
+                LOGE("Failed to add token to batch at position %d", i);
+                break;
+            }
             
-            // Decode single token (efficient with memory/KV cache)
-            if (llama_decode(wrapper->context, batch) != 0) {
+            // Decode single token efficiently
+            if (llama_decode(wrapper->context, wrapper->batch) != 0) {
                 LOGE("Failed to decode token at position %d", i);
                 break;
             }
@@ -388,4 +483,3 @@ extern "C" {
         }
     }
 }
-
