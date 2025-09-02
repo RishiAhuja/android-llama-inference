@@ -49,19 +49,19 @@ struct llama_context_wrapper {
     }
 };
 
-// Helper function to create and configure sampler
+// Helper function to create and configure sampler (ultra-fast for mobile)
 llama_sampler* create_sampler() {
     auto sparams = llama_sampler_chain_default_params();
     auto* sampler = llama_sampler_chain_init(sparams);
     
-    // Add samplers in the recommended order:
-    // 1. Top-K filtering (reduces candidates)
+    // Balanced sampling for good quality (sampling is not the bottleneck):
+    // 1. Top-K filtering
     llama_sampler_chain_add(sampler, llama_sampler_init_top_k(40));
     
-    // 2. Top-P nucleus sampling (further reduces candidates)
+    // 2. Top-P nucleus sampling  
     llama_sampler_chain_add(sampler, llama_sampler_init_top_p(0.9f, 1));
     
-    // 3. Temperature scaling (controls randomness)
+    // 3. Temperature scaling
     llama_sampler_chain_add(sampler, llama_sampler_init_temp(0.7f));
     
     // 4. Final distribution sampling
@@ -163,35 +163,30 @@ int process_tokens_in_batches(llama_context* ctx, llama_batch& batch,
                              const std::vector<llama_token>& tokens, 
                              std::vector<llama_seq_id>& seq_ids,
                              int start_pos, bool get_logits_for_last = true) {
-    const int batch_size = 512;
-    int processed = 0;
+    // Process ALL tokens in a single batch for maximum efficiency
+    clear_batch(batch);
     
-    for (size_t i = 0; i < tokens.size(); i += batch_size) {
-        clear_batch(batch);
+    LOGI("Processing %zu tokens in single efficient batch", tokens.size());
+    
+    // Add all tokens to the batch at once
+    for (size_t i = 0; i < tokens.size(); i++) {
+        const bool is_last_token = (i == tokens.size() - 1);
+        const bool get_logits = get_logits_for_last && is_last_token;
         
-        const int chunk_size = std::min(batch_size, (int)(tokens.size() - i));
-        
-        // Add tokens to batch
-        for (int j = 0; j < chunk_size; j++) {
-            const bool is_last_token = (i + j == tokens.size() - 1);
-            const bool get_logits = get_logits_for_last && is_last_token;
-            
-            if (!add_token_to_batch(batch, tokens[i + j], start_pos + processed + j, seq_ids, get_logits)) {
-                LOGE("Failed to add token to batch");
-                return -1;
-            }
-        }
-        
-        // Process this batch
-        if (llama_decode(ctx, batch) != 0) {
-            LOGE("Failed to decode batch at chunk %zu", i / batch_size);
+        if (!add_token_to_batch(batch, tokens[i], start_pos + i, seq_ids, get_logits)) {
+            LOGE("Failed to add token %zu to batch", i);
             return -1;
         }
-        
-        processed += chunk_size;
     }
     
-    return processed;
+    // Process entire batch in ONE call to llama_decode
+    if (llama_decode(ctx, batch) != 0) {
+        LOGE("Failed to decode batch of %zu tokens", tokens.size());
+        return -1;
+    }
+    
+    LOGI("Successfully processed all %zu tokens in single batch", tokens.size());
+    return static_cast<int>(tokens.size());
 }
 
 extern "C" {
@@ -219,13 +214,13 @@ extern "C" {
             return nullptr;
         }
 
-        // Configure context parameters
+        // Configure context parameters (properly optimized for mobile performance)
         llama_context_params cparams = llama_context_default_params();
-        cparams.n_ctx = 2048;
-        cparams.n_batch = 512;
+        cparams.n_ctx = 1024;      // Reasonable context size
+        cparams.n_batch = 512;     // Large batch size for efficient parallel processing
         cparams.n_ubatch = 512;
-        cparams.n_threads = 4;
-        cparams.n_threads_batch = 4;
+        cparams.n_threads = 4;     // Use multiple CPU cores for matrix operations
+        cparams.n_threads_batch = 4; // Use multiple cores for batch processing
         cparams.rope_scaling_type = LLAMA_ROPE_SCALING_TYPE_UNSPECIFIED;
         cparams.pooling_type = LLAMA_POOLING_TYPE_UNSPECIFIED;
         cparams.attention_type = LLAMA_ATTENTION_TYPE_UNSPECIFIED;
@@ -252,8 +247,8 @@ extern "C" {
             return nullptr;
         }
 
-        // Initialize reusable batch (max 512 tokens, no embeddings, 1 sequence)
-        wrapper->batch = llama_batch_init(512, 0, 1);
+        // Initialize reusable batch (proper size for efficient parallel processing)
+        wrapper->batch = llama_batch_init(512, 0, 1);  // Match n_batch size
         if (wrapper->batch.token == nullptr) {
             LOGE("Failed to create batch");
             wrapper->cleanup();
@@ -261,8 +256,8 @@ extern "C" {
             return nullptr;
         }
         
-        // Initialize sequence IDs buffer
-        wrapper->seq_ids.resize(512, 0);  // Initialize with sequence 0 for all tokens
+        // Initialize sequence IDs buffer (match batch size)
+        wrapper->seq_ids.resize(512, 0);  // Match batch size
 
         LOGI("Model loaded successfully");
         return wrapper;
@@ -326,6 +321,7 @@ extern "C" {
 
         // Process prompt tokens efficiently in batches
         LOGI("Processing %d prompt tokens in batches", n_prompt_tokens);
+        LOGI("Starting ultra-fast processing..."); // Immediate feedback
         int processed = process_tokens_in_batches(
             wrapper->context, 
             wrapper->batch, 
@@ -343,8 +339,8 @@ extern "C" {
         wrapper->n_past += n_prompt_tokens;
         LOGI("Processed prompt efficiently, n_past = %d", wrapper->n_past);
 
-        // Generation parameters - optimized for mobile
-        const int n_predict = 50;  // Max tokens to generate
+        // Generation parameters - optimized for mobile speed
+        const int n_predict = 20;  // Ultra-short for mobile speed
         const llama_token eos_token = llama_vocab_eos(vocab);
         const llama_token eot_token = llama_vocab_eot(vocab);
         
@@ -435,9 +431,9 @@ extern "C" {
                 break;
             }
             
-            // Log progress every 10 tokens instead of every token (reduce log spam)
-            if ((i + 1) % 10 == 0) {
-                LOGI("Generated %d/%d tokens, current: '%.30s...'", i + 1, n_predict, response.c_str());
+            // Log progress every 5 tokens for better mobile UX feedback
+            if ((i + 1) % 5 == 0) {
+                LOGI("Generated %d/%d tokens, current: '%.20s...'", i + 1, n_predict, response.c_str());
             }
         }
 
