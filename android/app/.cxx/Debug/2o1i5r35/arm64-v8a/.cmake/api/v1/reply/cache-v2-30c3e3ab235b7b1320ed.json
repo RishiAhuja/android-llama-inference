@@ -1615,10 +1615,10 @@
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "The CMake toolchain file"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
-			"type" : "FILEPATH",
+			"type" : "UNINITIALIZED",
 			"value" : "/home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/android.toolchain.cmake"
 		},
 		{
@@ -3488,6 +3488,18 @@
 			],
 			"type" : "STATIC",
 			"value" : "/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp"
+		},
+		{
+			"name" : "log-lib",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Path to a library."
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "/home/rishi/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/23/liblog.so"
 		}
 	],
 	"kind" : "cache",

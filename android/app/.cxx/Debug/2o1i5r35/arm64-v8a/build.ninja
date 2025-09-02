@@ -56,8 +56,6 @@ build CMakeFiles/native-lib.dir/native-lib.cpp.o: CXX_COMPILER__native-lib_Debug
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = CMakeFiles/native-lib.dir
   OBJECT_FILE_DIR = CMakeFiles/native-lib.dir
-  TARGET_COMPILE_PDB = CMakeFiles/native-lib.dir/
-  TARGET_PDB = /home/rishi/StudioProjects/gemma_app/build/app/intermediates/cxx/Debug/2o1i5r35/obj/arm64-v8a/libnative-lib.pdb
 
 
 # =============================================================================
@@ -67,18 +65,17 @@ build CMakeFiles/native-lib.dir/native-lib.cpp.o: CXX_COMPILER__native-lib_Debug
 #############################################
 # Link the shared library /home/rishi/StudioProjects/gemma_app/build/app/intermediates/cxx/Debug/2o1i5r35/obj/arm64-v8a/libnative-lib.so
 
-build /home/rishi/StudioProjects/gemma_app/build/app/intermediates/cxx/Debug/2o1i5r35/obj/arm64-v8a/libnative-lib.so: CXX_SHARED_LIBRARY_LINKER__native-lib_Debug CMakeFiles/native-lib.dir/native-lib.cpp.o | bin/libllama.so bin/libggml.so bin/libggml-cpu.so bin/libggml-base.so || bin/libggml-base.so bin/libggml-cpu.so bin/libggml.so bin/libllama.so
+build /home/rishi/StudioProjects/gemma_app/build/app/intermediates/cxx/Debug/2o1i5r35/obj/arm64-v8a/libnative-lib.so: CXX_SHARED_LIBRARY_LINKER__native-lib_Debug CMakeFiles/native-lib.dir/native-lib.cpp.o | bin/libllama.so /home/rishi/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/23/liblog.so bin/libggml.so bin/libggml-cpu.so bin/libggml-base.so || bin/libggml-base.so bin/libggml-cpu.so bin/libggml.so bin/libllama.so
   LANGUAGE_COMPILE_FLAGS = -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -march=armv8.2-a+fp16 -fno-limit-debug-info
   LINK_FLAGS = -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments
-  LINK_LIBRARIES = bin/libllama.so  bin/libggml.so  bin/libggml-cpu.so  bin/libggml-base.so  -latomic -lm
+  LINK_LIBRARIES = bin/libllama.so  /home/rishi/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/23/liblog.so  bin/libggml.so  bin/libggml-cpu.so  bin/libggml-base.so  -latomic -lm
   OBJECT_DIR = CMakeFiles/native-lib.dir
   POST_BUILD = :
   PRE_LINK = :
   SONAME = libnative-lib.so
   SONAME_FLAG = -Wl,-soname,
-  TARGET_COMPILE_PDB = CMakeFiles/native-lib.dir/
   TARGET_FILE = /home/rishi/StudioProjects/gemma_app/build/app/intermediates/cxx/Debug/2o1i5r35/obj/arm64-v8a/libnative-lib.so
-  TARGET_PDB = /home/rishi/StudioProjects/gemma_app/build/app/intermediates/cxx/Debug/2o1i5r35/obj/arm64-v8a/libnative-lib.pdb
+  TARGET_PDB = native-lib.so.dbg
 
 
 #############################################
@@ -306,8 +303,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.c.o: C_COMPILER__ggml-bas
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/
-  TARGET_PDB = bin/libggml-base.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.o: CXX_COMPILER__ggml-base_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml.cpp || cmake_object_order_depends_target_ggml-base
   DEFINES = -DGGML_BUILD -DGGML_COMMIT=\"d4d8dbe3\" -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_VERSION=\"0.0.6350\" -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_base_EXPORTS
@@ -316,8 +311,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.o: CXX_COMPILER__ggml
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/
-  TARGET_PDB = bin/libggml-base.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.o: C_COMPILER__ggml-base_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-alloc.c || cmake_object_order_depends_target_ggml-base
   DEFINES = -DGGML_BUILD -DGGML_COMMIT=\"d4d8dbe3\" -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_VERSION=\"0.0.6350\" -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_base_EXPORTS
@@ -326,8 +319,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.o: C_COMPILER__gg
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/
-  TARGET_PDB = bin/libggml-base.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.o: CXX_COMPILER__ggml-base_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-backend.cpp || cmake_object_order_depends_target_ggml-base
   DEFINES = -DGGML_BUILD -DGGML_COMMIT=\"d4d8dbe3\" -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_VERSION=\"0.0.6350\" -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_base_EXPORTS
@@ -336,8 +327,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.o: CXX_COMPIL
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/
-  TARGET_PDB = bin/libggml-base.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.o: CXX_COMPILER__ggml-base_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-opt.cpp || cmake_object_order_depends_target_ggml-base
   DEFINES = -DGGML_BUILD -DGGML_COMMIT=\"d4d8dbe3\" -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_VERSION=\"0.0.6350\" -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_base_EXPORTS
@@ -346,8 +335,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.o: CXX_COMPILER__
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/
-  TARGET_PDB = bin/libggml-base.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.o: CXX_COMPILER__ggml-base_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-threading.cpp || cmake_object_order_depends_target_ggml-base
   DEFINES = -DGGML_BUILD -DGGML_COMMIT=\"d4d8dbe3\" -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_VERSION=\"0.0.6350\" -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_base_EXPORTS
@@ -356,8 +343,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.o: CXX_COMP
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/
-  TARGET_PDB = bin/libggml-base.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.o: C_COMPILER__ggml-base_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-quants.c || cmake_object_order_depends_target_ggml-base
   DEFINES = -DGGML_BUILD -DGGML_COMMIT=\"d4d8dbe3\" -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_VERSION=\"0.0.6350\" -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_base_EXPORTS
@@ -366,8 +351,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.o: C_COMPILER__g
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/
-  TARGET_PDB = bin/libggml-base.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.o: CXX_COMPILER__ggml-base_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/gguf.cpp || cmake_object_order_depends_target_ggml-base
   DEFINES = -DGGML_BUILD -DGGML_COMMIT=\"d4d8dbe3\" -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_VERSION=\"0.0.6350\" -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_base_EXPORTS
@@ -376,8 +359,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.o: CXX_COMPILER__ggml
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/
-  TARGET_PDB = bin/libggml-base.pdb
 
 
 # =============================================================================
@@ -396,9 +377,8 @@ build bin/libggml-base.so: CXX_SHARED_LIBRARY_LINKER__ggml-base_Debug llama.cpp/
   PRE_LINK = :
   SONAME = libggml-base.so
   SONAME_FLAG = -Wl,-soname,
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/
   TARGET_FILE = bin/libggml-base.so
-  TARGET_PDB = bin/libggml-base.pdb
+  TARGET_PDB = ggml-base.so.dbg
 
 # =============================================================================
 # Object build statements for SHARED_LIBRARY target ggml
@@ -416,8 +396,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml.dir/ggml-backend-reg.cpp.o: CXX_COMPILE
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml.dir
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml.dir/
-  TARGET_PDB = bin/libggml.pdb
 
 
 # =============================================================================
@@ -436,9 +414,8 @@ build bin/libggml.so: CXX_SHARED_LIBRARY_LINKER__ggml_Debug llama.cpp/ggml/src/C
   PRE_LINK = :
   SONAME = libggml.so
   SONAME_FLAG = -Wl,-soname,
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml.dir/
   TARGET_FILE = bin/libggml.so
-  TARGET_PDB = bin/libggml.pdb
+  TARGET_PDB = ggml.so.dbg
 
 # =============================================================================
 # Object build statements for SHARED_LIBRARY target ggml-cpu
@@ -456,8 +433,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o: C_COMPIL
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/ggml-cpu.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -466,8 +441,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.o: CXX_CO
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/repack.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -476,8 +449,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.o: CXX_COMP
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/hbm.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -486,8 +457,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.o: CXX_COMPILE
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.o: C_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/quants.c || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -496,8 +465,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.o: C_COMPILER
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/traits.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -506,8 +473,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.o: CXX_COMP
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/amx/amx.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -516,8 +481,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.o: CXX_COM
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/amx/mmq.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -526,8 +489,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.o: CXX_COM
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/binary-ops.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -536,8 +497,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.o: CXX_
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/unary-ops.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -546,8 +505,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.o: CXX_C
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/vec.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -556,8 +513,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.o: CXX_COMPILE
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/ops.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -566,8 +521,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.o: CXX_COMPILE
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/llamafile/sgemm.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -576,8 +529,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o:
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/quants.c.o: C_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/arch/arm/quants.c || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -586,8 +537,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/quants.c.o: C
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/repack.cpp.o: CXX_COMPILER__ggml-cpu_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/arch/arm/repack.cpp || cmake_object_order_depends_target_ggml-cpu
   DEFINES = -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS
@@ -596,8 +545,6 @@ build llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/repack.cpp.o:
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/.. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir
   OBJECT_FILE_DIR = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
-  TARGET_PDB = bin/libggml-cpu.pdb
 
 
 # =============================================================================
@@ -616,9 +563,8 @@ build bin/libggml-cpu.so: CXX_SHARED_LIBRARY_LINKER__ggml-cpu_Debug llama.cpp/gg
   PRE_LINK = :
   SONAME = libggml-cpu.so
   SONAME_FLAG = -Wl,-soname,
-  TARGET_COMPILE_PDB = llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/
   TARGET_FILE = bin/libggml-cpu.so
-  TARGET_PDB = bin/libggml-cpu.pdb
+  TARGET_PDB = ggml-cpu.so.dbg
 
 
 #############################################
@@ -776,8 +722,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama.cpp.o: CXX_COMPILER__llama_Debug 
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-adapter.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-adapter.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -786,8 +730,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-adapter.cpp.o: CXX_COMPILER__llam
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-arch.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-arch.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -796,8 +738,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-arch.cpp.o: CXX_COMPILER__llama_D
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-batch.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-batch.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -806,8 +746,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-batch.cpp.o: CXX_COMPILER__llama_
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-chat.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-chat.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -816,8 +754,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-chat.cpp.o: CXX_COMPILER__llama_D
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-context.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-context.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -826,8 +762,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-context.cpp.o: CXX_COMPILER__llam
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-cparams.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-cparams.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -836,8 +770,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-cparams.cpp.o: CXX_COMPILER__llam
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-grammar.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-grammar.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -846,8 +778,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-grammar.cpp.o: CXX_COMPILER__llam
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-graph.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-graph.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -856,8 +786,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-graph.cpp.o: CXX_COMPILER__llama_
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-hparams.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-hparams.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -866,8 +794,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-hparams.cpp.o: CXX_COMPILER__llam
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-impl.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-impl.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -876,8 +802,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-impl.cpp.o: CXX_COMPILER__llama_D
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-io.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-io.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -886,8 +810,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-io.cpp.o: CXX_COMPILER__llama_Deb
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-kv-cache.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -896,8 +818,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache.cpp.o: CXX_COMPILER__lla
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-iswa.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-kv-cache-iswa.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -906,8 +826,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-iswa.cpp.o: CXX_COMPILER
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-memory.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-memory.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -916,8 +834,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-memory.cpp.o: CXX_COMPILER__llama
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-memory-hybrid.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -926,8 +842,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid.cpp.o: CXX_COMPILER
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-memory-recurrent.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-memory-recurrent.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -936,8 +850,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-memory-recurrent.cpp.o: CXX_COMPI
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-mmap.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-mmap.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -946,8 +858,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-mmap.cpp.o: CXX_COMPILER__llama_D
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-model-loader.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-model-loader.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -956,8 +866,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-model-loader.cpp.o: CXX_COMPILER_
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-model-saver.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-model-saver.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -966,8 +874,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-model-saver.cpp.o: CXX_COMPILER__
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-model.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-model.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -976,8 +882,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-model.cpp.o: CXX_COMPILER__llama_
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-quant.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-quant.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -986,8 +890,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-quant.cpp.o: CXX_COMPILER__llama_
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-sampling.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-sampling.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -996,8 +898,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-sampling.cpp.o: CXX_COMPILER__lla
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/llama-vocab.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/llama-vocab.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -1006,8 +906,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/llama-vocab.cpp.o: CXX_COMPILER__llama_
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/unicode-data.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/unicode-data.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -1016,8 +914,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/unicode-data.cpp.o: CXX_COMPILER__llama
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 build llama.cpp/src/CMakeFiles/llama.dir/unicode.cpp.o: CXX_COMPILER__llama_Debug /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/unicode.cpp || cmake_object_order_depends_target_llama
   DEFINES = -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS
@@ -1026,8 +922,6 @@ build llama.cpp/src/CMakeFiles/llama.dir/unicode.cpp.o: CXX_COMPILER__llama_Debu
   INCLUDES = -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/. -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/../include -I/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/../include
   OBJECT_DIR = llama.cpp/src/CMakeFiles/llama.dir
   OBJECT_FILE_DIR = llama.cpp/src/CMakeFiles/llama.dir
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
-  TARGET_PDB = bin/libllama.pdb
 
 
 # =============================================================================
@@ -1046,9 +940,8 @@ build bin/libllama.so: CXX_SHARED_LIBRARY_LINKER__llama_Debug llama.cpp/src/CMak
   PRE_LINK = :
   SONAME = libllama.so
   SONAME_FLAG = -Wl,-soname,
-  TARGET_COMPILE_PDB = llama.cpp/src/CMakeFiles/llama.dir/
   TARGET_FILE = bin/libllama.so
-  TARGET_PDB = bin/libllama.pdb
+  TARGET_PDB = llama.so.dbg
 
 
 #############################################
@@ -1190,14 +1083,14 @@ build llama.cpp/src/all: phony bin/libllama.so
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/android-legacy.toolchain.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/android.toolchain.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/flags.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Clang.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Determine.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Initialize.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Determine-Compiler.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/platforms.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/build-info.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/common.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/llama-config.cmake.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/llama.pc.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/common.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/ggml-config.cmake.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/CMakeLists.txt /usr/share/cmake-3.22/Modules/BasicConfigVersion-SameMajorVersion.cmake.in /usr/share/cmake-3.22/Modules/CMakeASMCompiler.cmake.in /usr/share/cmake-3.22/Modules/CMakeASMInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCCompiler.cmake.in /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c /usr/share/cmake-3.22/Modules/CMakeCInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCXXCompiler.cmake.in /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp /usr/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.22/Modules/CMakeCompilerIdDetection.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineASMCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCXXCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCompileFeatures.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCompilerABI.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCompilerId.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineSystem.cmake /usr/share/cmake-3.22/Modules/CMakeFindBinUtils.cmake /usr/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.22/Modules/CMakePackageConfigHelpers.cmake /usr/share/cmake-3.22/Modules/CMakeParseImplicitIncludeInfo.cmake /usr/share/cmake-3.22/Modules/CMakeParseImplicitLinkInfo.cmake /usr/share/cmake-3.22/Modules/CMakeParseLibraryArchitecture.cmake /usr/share/cmake-3.22/Modules/CMakeSystem.cmake.in /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.22/Modules/CMakeTestASMCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeTestCCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeTestCXXCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeTestCompilerCommon.cmake /usr/share/cmake-3.22/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.22/Modules/CheckCXXCompilerFlag.cmake /usr/share/cmake-3.22/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.22/Modules/CheckForPthreads.c /usr/share/cmake-3.22/Modules/CheckIncludeFile.c.in /usr/share/cmake-3.22/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.22/Modules/CheckIncludeFileCXX.cmake /usr/share/cmake-3.22/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.22/Modules/Compiler/ADSP-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/ARMCC-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/ARMClang-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/AppleClang-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Borland-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Bruce-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-ASM.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-C.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-CXX.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-DetermineCompilerInternal.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-FindBinUtils.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang.cmake /usr/share/cmake-3.22/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Compaq-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Cray-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Embarcadero-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Fujitsu-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/GHS-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU.cmake /usr/share/cmake-3.22/Modules/Compiler/HP-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/HP-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/IAR-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake /usr/share/cmake-3.22/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake /usr/share/cmake-3.22/Modules/Compiler/Intel-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/MSVC-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/NVHPC-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/NVIDIA-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/PGI-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/PathScale-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/SCO-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/SDCC-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/SunPro-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/TI-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/TinyCC-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/VisualAge-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Watcom-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/XL-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/XL-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/XLClang-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/zOS-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/FindGit.cmake /usr/share/cmake-3.22/Modules/FindOpenMP.cmake /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.22/Modules/FindPackageMessage.cmake /usr/share/cmake-3.22/Modules/FindThreads.cmake /usr/share/cmake-3.22/Modules/GNUInstallDirs.cmake /usr/share/cmake-3.22/Modules/Internal/CheckCompilerFlag.cmake /usr/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Internal/FeatureTesting.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-ASM.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-C.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Determine-C.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Determine-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Determine.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Initialize.cmake /usr/share/cmake-3.22/Modules/Platform/Android.cmake /usr/share/cmake-3.22/Modules/Platform/Android/Determine-Compiler.cmake /usr/share/cmake-3.22/Modules/Platform/Linux.cmake /usr/share/cmake-3.22/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.22/Modules/WriteBasicConfigVersionFile.cmake CMakeCache.txt CMakeFiles/3.22.1/CMakeASMCompiler.cmake CMakeFiles/3.22.1/CMakeCCompiler.cmake CMakeFiles/3.22.1/CMakeCXXCompiler.cmake CMakeFiles/3.22.1/CMakeSystem.cmake CMakeFiles/FindOpenMP/OpenMPCheckVersion.c CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp CMakeFiles/FindOpenMP/OpenMPTryFlag.c CMakeFiles/FindOpenMP/OpenMPTryFlag.cpp
+build build.ninja: RERUN_CMAKE | /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/android-legacy.toolchain.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/android.toolchain.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/flags.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Clang.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Initialize.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/platforms.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/build-info.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/common.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/llama-config.cmake.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/llama.pc.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/common.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/ggml-config.cmake.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/CMakeLists.txt /usr/share/cmake-3.22/Modules/BasicConfigVersion-SameMajorVersion.cmake.in /usr/share/cmake-3.22/Modules/CMakeASMInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.22/Modules/CMakePackageConfigHelpers.cmake /usr/share/cmake-3.22/Modules/CMakeParseImplicitLinkInfo.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.22/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.22/Modules/CheckCXXCompilerFlag.cmake /usr/share/cmake-3.22/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.22/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.22/Modules/CheckIncludeFileCXX.cmake /usr/share/cmake-3.22/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-ASM.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-C.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-CXX.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU.cmake /usr/share/cmake-3.22/Modules/FindGit.cmake /usr/share/cmake-3.22/Modules/FindOpenMP.cmake /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.22/Modules/FindPackageMessage.cmake /usr/share/cmake-3.22/Modules/FindThreads.cmake /usr/share/cmake-3.22/Modules/GNUInstallDirs.cmake /usr/share/cmake-3.22/Modules/Internal/CheckCompilerFlag.cmake /usr/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-ASM.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-C.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Initialize.cmake /usr/share/cmake-3.22/Modules/Platform/Android.cmake /usr/share/cmake-3.22/Modules/Platform/Linux.cmake /usr/share/cmake-3.22/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.22/Modules/WriteBasicConfigVersionFile.cmake CMakeCache.txt CMakeFiles/3.22.1/CMakeASMCompiler.cmake CMakeFiles/3.22.1/CMakeCCompiler.cmake CMakeFiles/3.22.1/CMakeCXXCompiler.cmake CMakeFiles/3.22.1/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/android-legacy.toolchain.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/android.toolchain.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/flags.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Clang.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Determine.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Initialize.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Determine-Compiler.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/platforms.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/build-info.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/common.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/llama-config.cmake.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/llama.pc.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/common.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/ggml-config.cmake.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/CMakeLists.txt /usr/share/cmake-3.22/Modules/BasicConfigVersion-SameMajorVersion.cmake.in /usr/share/cmake-3.22/Modules/CMakeASMCompiler.cmake.in /usr/share/cmake-3.22/Modules/CMakeASMInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCCompiler.cmake.in /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c /usr/share/cmake-3.22/Modules/CMakeCInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCXXCompiler.cmake.in /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp /usr/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.22/Modules/CMakeCompilerIdDetection.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineASMCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCXXCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCompileFeatures.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCompilerABI.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineCompilerId.cmake /usr/share/cmake-3.22/Modules/CMakeDetermineSystem.cmake /usr/share/cmake-3.22/Modules/CMakeFindBinUtils.cmake /usr/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.22/Modules/CMakePackageConfigHelpers.cmake /usr/share/cmake-3.22/Modules/CMakeParseImplicitIncludeInfo.cmake /usr/share/cmake-3.22/Modules/CMakeParseImplicitLinkInfo.cmake /usr/share/cmake-3.22/Modules/CMakeParseLibraryArchitecture.cmake /usr/share/cmake-3.22/Modules/CMakeSystem.cmake.in /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.22/Modules/CMakeTestASMCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeTestCCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeTestCXXCompiler.cmake /usr/share/cmake-3.22/Modules/CMakeTestCompilerCommon.cmake /usr/share/cmake-3.22/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.22/Modules/CheckCXXCompilerFlag.cmake /usr/share/cmake-3.22/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.22/Modules/CheckForPthreads.c /usr/share/cmake-3.22/Modules/CheckIncludeFile.c.in /usr/share/cmake-3.22/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.22/Modules/CheckIncludeFileCXX.cmake /usr/share/cmake-3.22/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.22/Modules/Compiler/ADSP-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/ARMCC-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/ARMClang-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/AppleClang-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Borland-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Bruce-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-ASM.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-C.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-CXX.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-DetermineCompilerInternal.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-FindBinUtils.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang.cmake /usr/share/cmake-3.22/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Compaq-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Cray-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Embarcadero-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Fujitsu-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/FujitsuClang-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/GHS-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU.cmake /usr/share/cmake-3.22/Modules/Compiler/HP-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/HP-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/IAR-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/IBMCPP-C-DetermineVersionInternal.cmake /usr/share/cmake-3.22/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake /usr/share/cmake-3.22/Modules/Compiler/Intel-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/IntelLLVM-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/MSVC-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/NVHPC-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/NVIDIA-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/PGI-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/PathScale-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/SCO-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/SDCC-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/SunPro-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/TI-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/TinyCC-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/VisualAge-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/Watcom-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/XL-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/XL-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/XLClang-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/zOS-C-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake /usr/share/cmake-3.22/Modules/FindGit.cmake /usr/share/cmake-3.22/Modules/FindOpenMP.cmake /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.22/Modules/FindPackageMessage.cmake /usr/share/cmake-3.22/Modules/FindThreads.cmake /usr/share/cmake-3.22/Modules/GNUInstallDirs.cmake /usr/share/cmake-3.22/Modules/Internal/CheckCompilerFlag.cmake /usr/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Internal/FeatureTesting.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-ASM.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-C.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Determine-C.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Determine-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Determine.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Initialize.cmake /usr/share/cmake-3.22/Modules/Platform/Android.cmake /usr/share/cmake-3.22/Modules/Platform/Android/Determine-Compiler.cmake /usr/share/cmake-3.22/Modules/Platform/Linux.cmake /usr/share/cmake-3.22/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.22/Modules/WriteBasicConfigVersionFile.cmake CMakeCache.txt CMakeFiles/3.22.1/CMakeASMCompiler.cmake CMakeFiles/3.22.1/CMakeCCompiler.cmake CMakeFiles/3.22.1/CMakeCXXCompiler.cmake CMakeFiles/3.22.1/CMakeSystem.cmake CMakeFiles/FindOpenMP/OpenMPCheckVersion.c CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp CMakeFiles/FindOpenMP/OpenMPTryFlag.c CMakeFiles/FindOpenMP/OpenMPTryFlag.cpp: phony
+build /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/android-legacy.toolchain.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/android.toolchain.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/flags.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Clang.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android-Initialize.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/hooks/pre/Android.cmake /home/rishi/Android/Sdk/ndk/26.1.10909125/build/cmake/platforms.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/build-info.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/common.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/llama-config.cmake.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/llama.pc.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/common.cmake /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/ggml-config.cmake.in /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/CMakeLists.txt /home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/CMakeLists.txt /usr/share/cmake-3.22/Modules/BasicConfigVersion-SameMajorVersion.cmake.in /usr/share/cmake-3.22/Modules/CMakeASMInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.22/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.22/Modules/CMakePackageConfigHelpers.cmake /usr/share/cmake-3.22/Modules/CMakeParseImplicitLinkInfo.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.22/Modules/CheckCSourceCompiles.cmake /usr/share/cmake-3.22/Modules/CheckCXXCompilerFlag.cmake /usr/share/cmake-3.22/Modules/CheckCXXSourceCompiles.cmake /usr/share/cmake-3.22/Modules/CheckIncludeFile.cmake /usr/share/cmake-3.22/Modules/CheckIncludeFileCXX.cmake /usr/share/cmake-3.22/Modules/CheckLibraryExists.cmake /usr/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-ASM.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-C.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang-CXX.cmake /usr/share/cmake-3.22/Modules/Compiler/Clang.cmake /usr/share/cmake-3.22/Modules/Compiler/GNU.cmake /usr/share/cmake-3.22/Modules/FindGit.cmake /usr/share/cmake-3.22/Modules/FindOpenMP.cmake /usr/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /usr/share/cmake-3.22/Modules/FindPackageMessage.cmake /usr/share/cmake-3.22/Modules/FindThreads.cmake /usr/share/cmake-3.22/Modules/GNUInstallDirs.cmake /usr/share/cmake-3.22/Modules/Internal/CheckCompilerFlag.cmake /usr/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-ASM.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-C.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang-CXX.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Clang.cmake /usr/share/cmake-3.22/Modules/Platform/Android-Initialize.cmake /usr/share/cmake-3.22/Modules/Platform/Android.cmake /usr/share/cmake-3.22/Modules/Platform/Linux.cmake /usr/share/cmake-3.22/Modules/Platform/UnixPaths.cmake /usr/share/cmake-3.22/Modules/WriteBasicConfigVersionFile.cmake CMakeCache.txt CMakeFiles/3.22.1/CMakeASMCompiler.cmake CMakeFiles/3.22.1/CMakeCCompiler.cmake CMakeFiles/3.22.1/CMakeCXXCompiler.cmake CMakeFiles/3.22.1/CMakeSystem.cmake: phony
 
 
 #############################################

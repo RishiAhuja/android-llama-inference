@@ -81,6 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     setState(() {
       _messages.add(ChatMessage(text: prompt, isUser: true));
+      _messages.add(ChatMessage(text: "Thinking...", isUser: false));
       _isGenerating = true;
     });
 
@@ -89,11 +90,13 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       final response = await _llamaService.generateResponse(prompt);
       setState(() {
-        _messages.add(ChatMessage(text: response, isUser: false));
+        // Replace the "Thinking..." message with the actual response
+        _messages.last = ChatMessage(text: response, isUser: false);
       });
     } catch (e) {
       setState(() {
-        _messages.add(ChatMessage(text: "Error: $e", isUser: false));
+        // Replace the "Thinking..." message with the error
+        _messages.last = ChatMessage(text: "Error: $e", isUser: false);
       });
     } finally {
       setState(() {
@@ -101,6 +104,39 @@ class _ChatScreenState extends State<ChatScreen> {
       });
       _scrollToBottom();
     }
+  }
+
+  void _resetConversation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Reset Conversation'),
+          content: const Text('This will clear the chat history and reset the conversation context. Continue?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  _messages.clear();
+                  _messages.add(ChatMessage(
+                    text: "Conversation reset! Ask me anything.",
+                    isUser: false,
+                  ));
+                });
+                _llamaService.resetConversation();
+                _scrollToBottom();
+              },
+              child: const Text('Reset'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _scrollToBottom() {
@@ -130,9 +166,16 @@ class _ChatScreenState extends State<ChatScreen> {
         title: const Text('Gemma Chat'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
+          if (_llamaService.isInitialized && !_isLoading)
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: _resetConversation,
+              tooltip: 'Reset Conversation',
+            ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => Navigator.pushNamed(context, '/models'),
+            tooltip: 'Model Management',
           ),
         ],
       ),

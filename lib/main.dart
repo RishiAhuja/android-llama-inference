@@ -257,7 +257,7 @@ class ModelManager extends ChangeNotifier {
             'modelAddress': modelAddress,
             'prompt': prompt,
           })).timeout(
-        const Duration(seconds: 60), // Increased timeout for complex inference
+        const Duration(seconds: 120), // Increased timeout for mobile inference
         onTimeout: () =>
             'Error: Inference timed out after 60 seconds. The model might be out of memory or the prompt is too complex.',
       );

@@ -23,20 +23,37 @@ class LlamaService {
     }
   }
 
+  void resetConversation() {
+    if (_isInitialized && _context != null) {
+      _ffi.resetConversation(_context!);
+    }
+  }
+
   Future<String> generateResponse(String prompt) async {
     if (!_isInitialized || _context == null) {
       return 'Error: Model not loaded';
     }
 
     try {
-      final promptC = prompt.toNativeUtf8();
-      final resultPtr = _ffi.predict(_context!, promptC);
-      calloc.free(promptC);
+      // Create a Future for the synchronous FFI call
+      final future = Future(() {
+        final promptC = prompt.toNativeUtf8();
+        final resultPtr = _ffi.predict(_context!, promptC);
+        calloc.free(promptC);
 
-      final result = resultPtr.toDartString();
-      _ffi.freeString(resultPtr);
+        final result = resultPtr.toDartString();
+        _ffi.freeString(resultPtr);
 
-      return result;
+        return result.isEmpty ? 'No response generated' : result;
+      });
+
+      // Apply timeout - optimized for better performance
+      return await future.timeout(
+        Duration(minutes: 2), // Reduced timeout with optimized inference
+        onTimeout: () {
+          return 'Response timed out after 2 minutes. Try a shorter prompt or check available RAM.';
+        },
+      );
     } catch (e) {
       return 'Error generating response: $e';
     }

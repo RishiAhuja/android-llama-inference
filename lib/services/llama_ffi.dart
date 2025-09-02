@@ -11,12 +11,14 @@ typedef PredictNative = Pointer<Utf8> Function(
     Pointer<LlamaOpaque> context, Pointer<Utf8> prompt);
 typedef FreeStringNative = Void Function(Pointer<Utf8> str);
 typedef FreeModelNative = Void Function(Pointer<LlamaOpaque> context);
+typedef ResetConversationNative = Void Function(Pointer<LlamaOpaque> context);
 
 typedef LoadModelDart = Pointer<LlamaOpaque> Function(Pointer<Utf8> modelPath);
 typedef PredictDart = Pointer<Utf8> Function(
     Pointer<LlamaOpaque> context, Pointer<Utf8> prompt);
 typedef FreeStringDart = void Function(Pointer<Utf8> str);
 typedef FreeModelDart = void Function(Pointer<LlamaOpaque> context);
+typedef ResetConversationDart = void Function(Pointer<LlamaOpaque> context);
 
 class LlamaFFI {
   late final DynamicLibrary _lib;
@@ -24,6 +26,7 @@ class LlamaFFI {
   late final PredictDart predict;
   late final FreeStringDart freeString;
   late final FreeModelDart freeModel;
+  late final ResetConversationDart resetConversation;
 
   LlamaFFI() {
     _lib = Platform.isAndroid
@@ -45,5 +48,9 @@ class LlamaFFI {
     freeModel = _lib
         .lookup<NativeFunction<FreeModelNative>>('free_model')
         .asFunction<FreeModelDart>();
+
+    resetConversation = _lib
+        .lookup<NativeFunction<ResetConversationNative>>('reset_conversation')
+        .asFunction<ResetConversationDart>();
   }
 }

@@ -15,6 +15,12 @@ add_subdirectory(llama.cpp)
 # Define our native library that bridges C++ to Dart.
 add_library(native-lib SHARED native-lib.cpp)
 
-# Link our native library against the compiled llama library.
-target_link_libraries(native-lib llama)
+# Find the log library required for Android logging
+find_library(log-lib log)
+
+# Link our native library against the compiled llama library and Android log library.
+target_link_libraries(native-lib 
+    llama 
+    ${log-lib}
+)
 
