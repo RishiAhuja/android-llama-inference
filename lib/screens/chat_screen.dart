@@ -4,7 +4,9 @@ import '../services/llama_service.dart';
 import '../services/model_manager.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final String? modelId;
+  
+  const ChatScreen({super.key, this.modelId});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -32,7 +34,8 @@ class _ChatScreenState extends State<ChatScreen> {
       _messages.add(ChatMessage(text: "Initializing...", isUser: false));
     });
 
-    await _modelManager.checkModelStatus();
+    // Use the specified model ID or check for any available model
+    await _modelManager.checkModelStatus(widget.modelId);
 
     if (_modelManager.status != ModelStatus.downloaded) {
       setState(() {
@@ -47,7 +50,10 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
     setState(() {
-      _messages.last = ChatMessage(text: "Loading model...", isUser: false);
+      _messages.last = ChatMessage(
+        text: "Loading ${_modelManager.currentModel?.name ?? 'model'}...", 
+        isUser: false,
+      );
     });
 
     final success =
@@ -56,12 +62,12 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       if (success) {
         _messages.last = ChatMessage(
-          text: "Model loaded! Ask me anything.",
+          text: "Hello! I'm ${_modelManager.currentModel?.name ?? 'your AI assistant'}. How can I help you today?",
           isUser: false,
         );
       } else {
         _messages.last = ChatMessage(
-          text: "Failed to load model. Please try restarting the app.",
+          text: "Failed to load ${_modelManager.currentModel?.name ?? 'model'}. Please try restarting the app.",
           isUser: false,
         );
       }
@@ -81,7 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     setState(() {
       _messages.add(ChatMessage(text: prompt, isUser: true));
-      _messages.add(ChatMessage(text: "Thinking...", isUser: false));
+      _messages.add(ChatMessage(text: "", isUser: false)); // Empty message for typing indicator
       _isGenerating = true;
     });
 
@@ -93,29 +99,35 @@ class _ChatScreenState extends State<ChatScreen> {
       final response = await _llamaService.generateResponse(prompt);
       stopwatch.stop();
       
-      setState(() {
-        // Replace the "Thinking..." message with the actual response including timing
-        _messages.last = ChatMessage(
-          text: response, 
-          isUser: false,
-          responseTime: stopwatch.elapsed,
-        );
-      });
+      if (mounted) {
+        setState(() {
+          // Replace the empty message with the actual response including timing
+          _messages.last = ChatMessage(
+            text: response, 
+            isUser: false,
+            responseTime: stopwatch.elapsed,
+          );
+        });
+      }
     } catch (e) {
       stopwatch.stop();
-      setState(() {
-        // Replace the "Thinking..." message with the error
-        _messages.last = ChatMessage(
-          text: "Error: $e", 
-          isUser: false,
-          responseTime: stopwatch.elapsed,
-        );
-      });
+      if (mounted) {
+        setState(() {
+          // Replace the empty message with the error
+          _messages.last = ChatMessage(
+            text: "Error: $e", 
+            isUser: false,
+            responseTime: stopwatch.elapsed,
+          );
+        });
+      }
     } finally {
-      setState(() {
-        _isGenerating = false;
-      });
-      _scrollToBottom();
+      if (mounted) {
+        setState(() {
+          _isGenerating = false;
+        });
+        _scrollToBottom();
+      }
     }
   }
 
@@ -200,7 +212,13 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: const EdgeInsets.all(16),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
-                return _MessageBubble(message: _messages[index]);
+                return _MessageBubble(
+                  message: _messages[index],
+                  isTyping: _isGenerating && 
+                           index == _messages.length - 1 && 
+                           !_messages[index].isUser &&
+                           _messages[index].text.isEmpty,
+                );
               },
             ),
           ),
@@ -264,15 +282,55 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
-class _MessageBubble extends StatelessWidget {
+class _MessageBubble extends StatefulWidget {
   final ChatMessage message;
+  final bool isTyping;
 
-  const _MessageBubble({required this.message});
+  const _MessageBubble({
+    required this.message,
+    this.isTyping = false,
+  });
+
+  @override
+  State<_MessageBubble> createState() => _MessageBubbleState();
+}
+
+class _MessageBubbleState extends State<_MessageBubble>
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    if (widget.isTyping) {
+      _animationController.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(_MessageBubble oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isTyping && !oldWidget.isTyping) {
+      _animationController.repeat();
+    } else if (!widget.isTyping && oldWidget.isTyping) {
+      _animationController.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: widget.message.isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -280,7 +338,7 @@ class _MessageBubble extends StatelessWidget {
           maxWidth: MediaQuery.of(context).size.width * 0.75,
         ),
         decoration: BoxDecoration(
-          color: message.isUser
+          color: widget.message.isUser
               ? Theme.of(context).colorScheme.primary
               : Theme.of(context).colorScheme.secondaryContainer,
           borderRadius: BorderRadius.circular(16),
@@ -289,22 +347,25 @@ class _MessageBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SelectableText(
-              message.text,
-              style: TextStyle(
-                color: message.isUser
-                    ? Theme.of(context).colorScheme.onPrimary
-                    : Theme.of(context).colorScheme.onSecondaryContainer,
+            if (widget.isTyping)
+              _buildTypingIndicator()
+            else
+              SelectableText(
+                widget.message.text,
+                style: TextStyle(
+                  color: widget.message.isUser
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.onSecondaryContainer,
+                ),
               ),
-            ),
-            if (!message.isUser && message.responseTime != null)
+            if (!widget.message.isUser && widget.message.responseTime != null)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
-                  'Response time: ${_formatDuration(message.responseTime!)}',
+                  'Response time: ${_formatDuration(widget.message.responseTime!)}',
                   style: TextStyle(
                     fontSize: 11,
-                    color: (message.isUser
+                    color: (widget.message.isUser
                             ? Theme.of(context).colorScheme.onPrimary
                             : Theme.of(context).colorScheme.onSecondaryContainer)
                         .withOpacity(0.7),
@@ -314,6 +375,49 @@ class _MessageBubble extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTypingIndicator() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Thinking',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSecondaryContainer.withOpacity(0.7),
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(3, (index) {
+                  final delay = index * 0.2;
+                  final animValue = (_animationController.value - delay).clamp(0.0, 1.0);
+                  return Transform.translate(
+                    offset: Offset(0, -5 * (1 - (animValue * 2 - 1).abs())),
+                    child: Container(
+                      width: 4,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onSecondaryContainer.withOpacity(0.7),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  );
+                }),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

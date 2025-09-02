@@ -296,7 +296,11 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
             child: ElevatedButton.icon(
               onPressed: () {
                 _modelManager.setCurrentModel(model.id);
-                Navigator.pushReplacementNamed(context, '/chat');
+                Navigator.pushReplacementNamed(
+                  context, 
+                  '/chat',
+                  arguments: {'modelId': model.id},
+                );
               },
               icon: const Icon(Icons.chat),
               label: const Text('Use Model'),

@@ -15,9 +15,23 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       initialRoute: '/models',
-      routes: {
-        '/models': (context) => const ModelManagementScreen(),
-        '/chat': (context) => const ChatScreen(),
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/models':
+            return MaterialPageRoute(
+              builder: (context) => const ModelManagementScreen(),
+            );
+          case '/chat':
+            final args = settings.arguments as Map<String, dynamic>?;
+            final modelId = args?['modelId'] as String?;
+            return MaterialPageRoute(
+              builder: (context) => ChatScreen(modelId: modelId),
+            );
+          default:
+            return MaterialPageRoute(
+              builder: (context) => const ModelManagementScreen(),
+            );
+        }
       },
     );
   }

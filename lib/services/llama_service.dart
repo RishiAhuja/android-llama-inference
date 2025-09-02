@@ -1,5 +1,7 @@
 import 'dart:ffi';
+import 'dart:io';
 import 'package:ffi/ffi.dart';
+import 'package:flutter/foundation.dart';
 import '../services/llama_ffi.dart';
 
 class LlamaService {
@@ -35,25 +37,13 @@ class LlamaService {
     }
 
     try {
-      // Create a Future for the synchronous FFI call
-      final future = Future(() {
-        final promptC = prompt.toNativeUtf8();
-        final resultPtr = _ffi.predict(_context!, promptC);
-        calloc.free(promptC);
-
-        final result = resultPtr.toDartString();
-        _ffi.freeString(resultPtr);
-
-        return result.isEmpty ? 'No response generated' : result;
+      // Run inference on a background isolate using compute
+      final result = await compute(_runInferenceCompute, {
+        'contextAddress': _context!.address,
+        'prompt': prompt,
       });
 
-      // Apply timeout - optimized for better performance
-      return await future.timeout(
-        Duration(minutes: 2), // Reduced timeout with optimized inference
-        onTimeout: () {
-          return 'Response timed out after 2 minutes. Try a shorter prompt or check available RAM.';
-        },
-      );
+      return result.isEmpty ? 'No response generated' : result;
     } catch (e) {
       return 'Error generating response: $e';
     }
@@ -65,5 +55,51 @@ class LlamaService {
       _context = null;
       _isInitialized = false;
     }
+  }
+}
+
+// Top-level function for isolate execution with compute
+String _runInferenceCompute(Map<String, dynamic> args) {
+  try {
+    final int contextAddress = args['contextAddress'];
+    final String prompt = args['prompt'];
+
+    // Load the native library in the isolate
+    final DynamicLibrary lib = Platform.isAndroid
+        ? DynamicLibrary.open("libnative-lib.so")
+        : DynamicLibrary.process();
+
+    // Use simple function signatures without defining types
+    final predict = lib.lookupFunction<
+        Pointer<Utf8> Function(Pointer<Void> context, Pointer<Utf8> prompt),
+        Pointer<Utf8> Function(Pointer<Void> context, Pointer<Utf8> prompt)
+    >('predict');
+
+    final freeString = lib.lookupFunction<
+        Void Function(Pointer<Utf8> str),
+        void Function(Pointer<Utf8> str)
+    >('free_string');
+
+    // Convert context address back to pointer
+    final contextPtr = Pointer<Void>.fromAddress(contextAddress);
+    
+    // Convert prompt to native string
+    final promptC = prompt.toNativeUtf8();
+    
+    // Call the native predict function
+    final resultPtr = predict(contextPtr, promptC);
+    
+    // Free the prompt string
+    calloc.free(promptC);
+    
+    // Convert result to Dart string
+    final result = resultPtr.toDartString();
+    
+    // Free the result string
+    freeString(resultPtr);
+    
+    return result;
+  } catch (e) {
+    return 'Error in isolate: $e';
   }
 }
