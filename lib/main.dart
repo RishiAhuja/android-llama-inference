@@ -1,11 +1,9 @@
 import 'dart:ffi';
 import 'dart:io';
-import 'dart:isolate';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/foundation.dart'; // Import for compute/Isolate.run
 
 // --- FFI Definitions ---
 
@@ -52,30 +50,6 @@ class LlamaFFI {
         .lookup<NativeFunction<_FreeModelFunc>>('free_model')
         .asFunction<_FreeModel>();
   }
-}
-
-// --- Background Isolate Function ---
-
-// This function will run in the background isolate.
-// It takes the model context address and the prompt as arguments.
-// Note: FFI bindings need to be re-initialized in the new isolate.
-String _runInferenceIsolate(Map<String, dynamic> args) {
-  final LlamaFFI llama = LlamaFFI();
-  final modelAddress = args['modelAddress'] as int;
-  final prompt = args['prompt'] as String;
-
-  final modelContext = Pointer<_Opaque>.fromAddress(modelAddress);
-
-  final promptC = prompt.toNativeUtf8();
-  final resultPtr = llama.predict(modelContext, promptC);
-  calloc.free(promptC);
-
-  final result = resultPtr.toDartString();
-
-  // IMPORTANT: Free the string allocated in C++ within the same isolate
-  llama.freeString(resultPtr);
-
-  return result;
 }
 
 // --- Main App ---
@@ -130,7 +104,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
     try {
       // Get a file path to the model by copying it from assets
-      final modelPath = await _getAssetFile('assets/gemma-3-1b-it-Q4_K_M.gguf');
+      final modelPath =
+          await _getAssetFile('assets/models/gemma-3-1b-it-Q4_K_M.gguf');
 
       setState(() {
         _modelResponse = "Loading model, this may take a moment...";
@@ -187,13 +162,14 @@ class _ChatScreenState extends State<ChatScreen> {
       final prompt = _promptController.text;
       _promptController.clear();
 
-      // FIX: Run the blocking FFI call in a background isolate
-      final response = await Isolate.run(() => _runInferenceIsolate({
-            'modelAddress': _modelContext.address,
-            'prompt': prompt,
-          }));
+      final promptC = prompt.toNativeUtf8();
+      final resultPtr = _llama.predict(_modelContext, promptC);
+      calloc.free(promptC);
 
-      _modelResponse = response;
+      _modelResponse = resultPtr.toDartString();
+
+      // IMPORTANT: Free the string allocated in C++
+      _llama.freeString(resultPtr);
     } catch (e) {
       _modelResponse = "Error during inference: $e";
     } finally {
