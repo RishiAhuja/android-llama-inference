@@ -1,261 +1,567 @@
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:isolate';
 import 'package:ffi/ffi.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 
-// --- FFI Definitions ---
+// --- Isolate Function for Inference ---
+String _inferenceIsolate(Map<String, dynamic> args) {
+  try {
+    print('Isolate: Starting inference');
+    final modelAddress = args['modelAddress'] as int;
+    final prompt = args['prompt'] as String;
+    
+    print('Isolate: Model address: $modelAddress, Prompt: $prompt');
 
-// Define a type for the opaque model pointer from C++
-final class _Opaque extends Opaque {}
-
-// C function signatures
-typedef _LoadModelFunc = Pointer<_Opaque> Function(Pointer<Utf8> modelPath);
-typedef _PredictFunc = Pointer<Utf8> Function(
-    Pointer<_Opaque> context, Pointer<Utf8> prompt);
-typedef _FreeStringFunc = Void Function(Pointer<Utf8> str);
-typedef _FreeModelFunc = Void Function(Pointer<_Opaque> context);
-
-// Dart function signatures
-typedef _LoadModel = Pointer<_Opaque> Function(Pointer<Utf8> modelPath);
-typedef _Predict = Pointer<Utf8> Function(
-    Pointer<_Opaque> context, Pointer<Utf8> prompt);
-typedef _FreeString = void Function(Pointer<Utf8> str);
-typedef _FreeModel = void Function(Pointer<_Opaque> context);
-
-// Helper class to load and bind the FFI functions
-class LlamaFFI {
-  late final DynamicLibrary _lib;
-  late final _LoadModel loadModel;
-  late final _Predict predict;
-  late final _FreeString freeString;
-  late final _FreeModel freeModel;
-
-  LlamaFFI() {
-    _lib = Platform.isAndroid
+    final DynamicLibrary lib = Platform.isAndroid
         ? DynamicLibrary.open("libnative-lib.so")
-        : DynamicLibrary.process(); // Or handle other platforms
+        : DynamicLibrary.process();
 
-    loadModel = _lib
-        .lookup<NativeFunction<_LoadModelFunc>>('load_model')
-        .asFunction<_LoadModel>();
-    predict = _lib
+    final predict = lib
         .lookup<NativeFunction<_PredictFunc>>('predict')
         .asFunction<_Predict>();
-    freeString = _lib
+    final freeString = lib
         .lookup<NativeFunction<_FreeStringFunc>>('free_string')
         .asFunction<_FreeString>();
-    freeModel = _lib
-        .lookup<NativeFunction<_FreeModelFunc>>('free_model')
-        .asFunction<_FreeModel>();
+
+    final modelContext = Pointer<_Opaque>.fromAddress(modelAddress);
+    final promptC = prompt.toNativeUtf8();
+    
+    print('Isolate: Calling predict function');
+    final resultPtr = predict(modelContext, promptC);
+    calloc.free(promptC);
+
+    if (resultPtr.address == 0) {
+      print('Isolate: Predict returned null pointer');
+      return 'Error: Model returned null response';
+    }
+
+    final result = resultPtr.cast<Utf8>().toDartString();
+    print('Isolate: Got result: ${result.length} characters');
+    
+    freeString(resultPtr);
+    
+    return result;
+  } catch (e) {
+    print('Isolate: Exception during inference: $e');
+    return 'Error during inference: $e';
   }
 }
 
-// --- Main App ---
+// FFI Types
+final class _Opaque extends Opaque {}
 
-void main() {
-  runApp(const MyApp());
+typedef _LoadModelFunc = Pointer<_Opaque> Function(Pointer<Utf8> modelPath);
+typedef _PredictFunc = Pointer<Utf8> Function(Pointer<_Opaque> context, Pointer<Utf8> prompt);
+typedef _FreeStringFunc = Void Function(Pointer<Utf8> str);
+
+typedef _LoadModel = Pointer<_Opaque> Function(Pointer<Utf8> modelPath);
+typedef _Predict = Pointer<Utf8> Function(Pointer<_Opaque> context, Pointer<Utf8> prompt);
+typedef _FreeString = void Function(Pointer<Utf8> str);
+
+// Data classes
+enum ModelStatus { notDownloaded, downloading, downloaded, loading, loaded, error }
+
+class ChatMessage {
+  final String text;
+  final bool isUser;
+  ChatMessage({required this.text, required this.isUser});
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// Model Manager
+class ModelManager extends ChangeNotifier {
+  ModelStatus _status = ModelStatus.notDownloaded;
+  double _downloadProgress = 0.0;
+  String? _error;
+  int _modelAddress = 0;
+  File? _modelFile;
+  
+  ModelStatus get status => _status;
+  double get downloadProgress => _downloadProgress;
+  String? get error => _error;
+  bool get isLoaded => _status == ModelStatus.loaded;
+  
+  static const String modelUrl = 'https://huggingface.co/ggml-org/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf';
+  static const String modelFilename = 'gemma-3-1b-it-Q4_K_M.gguf';
+  
+  Future<void> init() async {
+    final appDir = await getApplicationDocumentsDirectory();
+    _modelFile = File('${appDir.path}/$modelFilename');
+    
+    if (await _modelFile!.exists()) {
+      _setStatus(ModelStatus.downloaded);
+    } else {
+      _setStatus(ModelStatus.notDownloaded);
+    }
+  }
+  
+  Future<void> download() async {
+    if (_status == ModelStatus.downloading) return;
+    
+    _setStatus(ModelStatus.downloading);
+    _error = null;
+    
+    try {
+      final request = http.Request('GET', Uri.parse(modelUrl));
+      final response = await request.send();
+      
+      if (response.statusCode == 200) {
+        final totalBytes = response.contentLength ?? 0;
+        var downloadedBytes = 0;
+        final bytes = <int>[];
+        
+        await for (final chunk in response.stream) {
+          bytes.addAll(chunk);
+          downloadedBytes += chunk.length;
+          
+          if (totalBytes > 0) {
+            _downloadProgress = downloadedBytes / totalBytes;
+            notifyListeners();
+          }
+        }
+        
+        await _modelFile!.writeAsBytes(bytes);
+        _setStatus(ModelStatus.downloaded);
+      } else {
+        throw Exception('HTTP ${response.statusCode}');
+      }
+    } catch (e) {
+      _error = 'Download failed: $e';
+      _setStatus(ModelStatus.error);
+    }
+  }
+  
+  Future<void> load() async {
+    if (_status != ModelStatus.downloaded) return;
+    
+    _setStatus(ModelStatus.loading);
+    _error = null;
+    
+    try {
+      // Direct model loading without isolates to avoid sendable object issues
+      final DynamicLibrary lib = Platform.isAndroid
+          ? DynamicLibrary.open("libnative-lib.so")
+          : DynamicLibrary.process();
 
+      final loadModel = lib
+          .lookup<NativeFunction<_LoadModelFunc>>('load_model')
+          .asFunction<_LoadModel>();
+
+      final modelPathC = _modelFile!.path.toNativeUtf8();
+      final context = loadModel(modelPathC);
+      calloc.free(modelPathC);
+
+      if (context.address != 0) {
+        _modelAddress = context.address;
+        _setStatus(ModelStatus.loaded);
+      } else {
+        throw Exception('Model loading failed');
+      }
+    } catch (e) {
+      _error = 'Load failed: $e';
+      _setStatus(ModelStatus.error);
+    }
+  }
+  
+  Future<String> inference(String prompt) async {
+    if (!isLoaded) throw Exception('Model not loaded');
+    
+    print('Main: Starting inference for prompt: $prompt');
+    print('Main: Model address: $_modelAddress');
+    
+    try {
+      // Extract model address to avoid capturing 'this' in the isolate
+      final modelAddress = _modelAddress;
+      
+      // Run inference in isolate with timeout
+      final result = await Isolate.run(() => _inferenceIsolate({
+        'modelAddress': modelAddress,
+        'prompt': prompt,
+      })).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => 'Error: Inference timed out after 30 seconds',
+      );
+      
+      print('Main: Inference completed, result length: ${result.length}');
+      return result;
+    } catch (e) {
+      print('Main: Inference error: $e');
+      return 'Error during inference: $e';
+    }
+  }
+  
+  Future<void> delete() async {
+    if (_modelFile != null && await _modelFile!.exists()) {
+      await _modelFile!.delete();
+    }
+    _modelAddress = 0;
+    _setStatus(ModelStatus.notDownloaded);
+  }
+  
+  void _setStatus(ModelStatus newStatus) {
+    _status = newStatus;
+    notifyListeners();
+  }
+}
+
+// Main App
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Gemma on Flutter (Manual)',
+      title: 'Gemma 3B',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blueGrey, brightness: Brightness.dark),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark),
         useMaterial3: true,
       ),
-      home: const ChatScreen(),
+      home: ModelScreen(),
     );
   }
 }
 
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+// Model Management Screen
+class ModelScreen extends StatefulWidget {
+  @override
+  State<ModelScreen> createState() => _ModelScreenState();
+}
 
+class _ModelScreenState extends State<ModelScreen> {
+  late ModelManager modelManager;
+  
+  @override
+  void initState() {
+    super.initState();
+    modelManager = ModelManager();
+    modelManager.addListener(() => setState(() {}));
+    modelManager.init();
+  }
+  
+  @override
+  void dispose() {
+    modelManager.dispose();
+    super.dispose();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Gemma 3B Model Manager')),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Gemma 3B Instruct', style: Theme.of(context).textTheme.headlineMedium),
+                        SizedBox(height: 8),
+                        Text('Size: ~800MB'),
+                        SizedBox(height: 16),
+                        _buildStatus(),
+                        SizedBox(height: 16),
+                        _buildActions(),
+                        if (modelManager.error != null) ...[
+                          SizedBox(height: 16),
+                          Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(modelManager.error!, style: TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (modelManager.isLoaded) ...[
+              SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (_) => ChatScreen(modelManager: modelManager))
+                  ),
+                  icon: Icon(Icons.chat),
+                  label: Text('Start Chat'),
+                  style: ElevatedButton.styleFrom(padding: EdgeInsets.all(16)),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildStatus() {
+    switch (modelManager.status) {
+      case ModelStatus.notDownloaded:
+        return Text('Model not downloaded');
+      case ModelStatus.downloading:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Downloading... ${(modelManager.downloadProgress * 100).toInt()}%'),
+            SizedBox(height: 8),
+            LinearProgressIndicator(value: modelManager.downloadProgress),
+          ],
+        );
+      case ModelStatus.downloaded:
+        return Text('Model ready to load');
+      case ModelStatus.loading:
+        return Row(
+          children: [
+            SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+            SizedBox(width: 8),
+            Text('Loading model...'),
+          ],
+        );
+      case ModelStatus.loaded:
+        return Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green),
+            SizedBox(width: 8),
+            Text('Model loaded and ready'),
+          ],
+        );
+      case ModelStatus.error:
+        return Text('Error occurred');
+    }
+  }
+  
+  Widget _buildActions() {
+    switch (modelManager.status) {
+      case ModelStatus.notDownloaded:
+        return SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: modelManager.download,
+            icon: Icon(Icons.download),
+            label: Text('Download Model'),
+          ),
+        );
+      case ModelStatus.downloading:
+        return SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: null,
+            icon: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+            label: Text('Downloading...'),
+          ),
+        );
+      case ModelStatus.downloaded:
+        return Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: modelManager.load,
+                icon: Icon(Icons.memory),
+                label: Text('Load Model'),
+              ),
+            ),
+            SizedBox(width: 8),
+            ElevatedButton.icon(
+              onPressed: modelManager.delete,
+              icon: Icon(Icons.delete),
+              label: Text('Delete'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            ),
+          ],
+        );
+      case ModelStatus.loading:
+        return SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: null,
+            icon: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+            label: Text('Loading...'),
+          ),
+        );
+      case ModelStatus.loaded:
+        return SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: modelManager.delete,
+            icon: Icon(Icons.delete),
+            label: Text('Unload & Delete'),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+          ),
+        );
+      case ModelStatus.error:
+        return SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: modelManager.init,
+            icon: Icon(Icons.refresh),
+            label: Text('Retry'),
+          ),
+        );
+    }
+  }
+}
+
+// Chat Screen
+class ChatScreen extends StatefulWidget {
+  final ModelManager modelManager;
+  
+  ChatScreen({required this.modelManager});
+  
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final LlamaFFI _llama = LlamaFFI();
-  Pointer<_Opaque> _modelContext = Pointer.fromAddress(0);
-  final TextEditingController _promptController = TextEditingController();
-  String _modelResponse = "";
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadModel();
-  }
-
-  // --- Model Loading ---
-  Future<void> _loadModel() async {
-    setState(() {
-      _isLoading = true;
-      _modelResponse = "Copying model from assets...";
-    });
-
-    try {
-      // Get a file path to the model by copying it from assets
-      final modelPath =
-          await _getAssetFile('assets/models/gemma-3-1b-it-Q4_K_M.gguf');
-
-      setState(() {
-        _modelResponse = "Loading model, this may take a moment...";
-      });
-
-      // Load the model using FFI
-      // Use a separate isolate to avoid blocking the UI thread (recommended for real apps)
-      await Future.delayed(
-          const Duration(milliseconds: 100)); // Allow UI to update
-      final modelPathC = modelPath.toNativeUtf8();
-      _modelContext = _llama.loadModel(modelPathC);
-      calloc.free(modelPathC);
-
-      if (_modelContext.address == 0) {
-        _modelResponse = "Error: Failed to load model (null context).";
-      } else {
-        _modelResponse = "Model loaded successfully! Ask me anything.";
-      }
-    } catch (e) {
-      _modelResponse = "Error loading model: $e";
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  // Helper to copy an asset to a temporary file
-  Future<String> _getAssetFile(String asset) async {
-    final byteData = await rootBundle.load(asset);
-    final tempDir = await getTemporaryDirectory();
-    final file = File('${tempDir.path}/${asset.split('/').last}');
-    await file.writeAsBytes(byteData.buffer
-        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-    return file.path;
-  }
-
-  // --- Inference Logic ---
-  Future<void> _runInference() async {
-    if (_modelContext.address == 0 ||
-        _isLoading ||
-        _promptController.text.isEmpty) {
-      return;
-    }
-
-    FocusScope.of(context).unfocus();
-
-    setState(() {
-      _isLoading = true;
-      _modelResponse = "";
-    });
-
-    try {
-      final prompt = _promptController.text;
-      _promptController.clear();
-
-      final promptC = prompt.toNativeUtf8();
-      final resultPtr = _llama.predict(_modelContext, promptC);
-      calloc.free(promptC);
-
-      _modelResponse = resultPtr.toDartString();
-
-      // IMPORTANT: Free the string allocated in C++
-      _llama.freeString(resultPtr);
-    } catch (e) {
-      _modelResponse = "Error during inference: $e";
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
+  final _controller = TextEditingController();
+  final _messages = <ChatMessage>[];
+  final _scrollController = ScrollController();
+  bool _isThinking = false;
+  
   @override
   void dispose() {
-    if (_modelContext.address != 0) {
-      _llama.freeModel(_modelContext);
-    }
-    _promptController.dispose();
+    _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
-
-  // --- UI Build Method (Identical to previous version) ---
+  
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+  
+  Future<void> _sendMessage() async {
+    if (_controller.text.isEmpty || _isThinking) return;
+    
+    final prompt = _controller.text;
+    _controller.clear();
+    
+    print('Chat: Sending message: $prompt');
+    
+    setState(() {
+      _messages.add(ChatMessage(text: prompt, isUser: true));
+      _isThinking = true;
+    });
+    _scrollToBottom();
+    
+    try {
+      print('Chat: Calling modelManager.inference()');
+      final response = await widget.modelManager.inference(prompt);
+      print('Chat: Got response: ${response.substring(0, response.length > 100 ? 100 : response.length)}...');
+      
+      setState(() {
+        _messages.add(ChatMessage(text: response, isUser: false));
+      });
+    } catch (e) {
+      print('Chat: Error during inference: $e');
+      setState(() {
+        _messages.add(ChatMessage(text: 'Error: $e', isUser: false));
+      });
+    } finally {
+      setState(() => _isThinking = false);
+      _scrollToBottom();
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gemma 3B on Flutter (Manual)'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(12.0),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: SingleChildScrollView(
-                  child: SelectableText(
-                    _modelResponse,
-                    style: const TextStyle(fontSize: 16.0),
+      appBar: AppBar(title: Text('Chat with Gemma 3B')),
+      body: Column(
+        children: [
+          Expanded(
+            child: _messages.isEmpty
+                ? Center(child: Text('Start chatting with Gemma 3B!'))
+                : ListView.builder(
+                    controller: _scrollController,
+                    itemCount: _messages.length,
+                    itemBuilder: (context, index) {
+                      final message = _messages[index];
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                        child: Align(
+                          alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+                            decoration: BoxDecoration(
+                              color: message.isUser 
+                                  ? Theme.of(context).colorScheme.primary 
+                                  : Theme.of(context).colorScheme.secondaryContainer,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: SelectableText(
+                              message.text,
+                              style: TextStyle(
+                                color: message.isUser 
+                                    ? Theme.of(context).colorScheme.onPrimary 
+                                    : Theme.of(context).colorScheme.onSecondaryContainer,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ),
+          ),
+          if (_isThinking)
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                  SizedBox(width: 8),
+                  Text('Gemma is thinking...'),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            if (_isLoading)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: Column(
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 8),
-                    Text("Processing..."),
-                  ],
-                ),
-              ),
-            Row(
+          Padding(
+            padding: EdgeInsets.all(16),
+            child: Row(
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _promptController,
+                    controller: _controller,
                     decoration: InputDecoration(
-                      hintText: 'Enter your prompt...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
+                      hintText: 'Type a message...',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(24)),
                     ),
-                    onSubmitted: (_) => _runInference(),
+                    onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _isLoading || _modelContext.address == 0
-                      ? null
-                      : _runInference,
+                  onPressed: _isThinking ? null : _sendMessage,
+                  icon: Icon(Icons.send),
                   style: IconButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    padding: const EdgeInsets.all(16),
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -36,9 +36,12 @@ dependencies:
   # llama_cpp_dart: 0.0.7  # Removed due to build issues 
 
   # For finding the correct file path to save the model
-  path_provider:
+  path_provider: ^2.1.2
   
-  cupertino_icons:
+  # For downloading model from HuggingFace
+  http: ^1.2.0
+  
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
@@ -61,8 +64,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  assets:
-    - assets/models/gemma-3-1b-it-Q4_K_M.gguf
+  # Removed large model file from assets - will download on demand instead
+  # assets:
+  #   - assets/models/gemma-3-1b-it-Q4_K_M.gguf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
