@@ -110,20 +110,29 @@ class ModelManager extends ChangeNotifier {
       if (response.statusCode == 200) {
         final totalBytes = response.contentLength ?? 0;
         var downloadedBytes = 0;
-        final bytes = <int>[];
         
-        await for (final chunk in response.stream) {
-          bytes.addAll(chunk);
-          downloadedBytes += chunk.length;
-          
-          if (totalBytes > 0) {
-            _downloadProgress = downloadedBytes / totalBytes;
-            notifyListeners();
+        // Open file for writing in chunks to avoid memory issues
+        final fileSink = _modelFile!.openWrite();
+        
+        try {
+          await for (final chunk in response.stream) {
+            // Write chunk directly to file instead of accumulating in memory
+            fileSink.add(chunk);
+            downloadedBytes += chunk.length;
+            
+            if (totalBytes > 0) {
+              _downloadProgress = downloadedBytes / totalBytes;
+              notifyListeners();
+            }
           }
+          
+          await fileSink.flush();
+          await fileSink.close();
+          _setStatus(ModelStatus.downloaded);
+        } catch (e) {
+          await fileSink.close();
+          rethrow;
         }
-        
-        await _modelFile!.writeAsBytes(bytes);
-        _setStatus(ModelStatus.downloaded);
       } else {
         throw Exception('HTTP ${response.statusCode}');
       }
