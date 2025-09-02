@@ -16,7 +16,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _promptController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessage> _messages = [];
-  
+
   bool _isLoading = true;
   bool _isGenerating = false;
 
@@ -33,11 +33,12 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     await _modelManager.checkModelStatus();
-    
+
     if (_modelManager.status != ModelStatus.downloaded) {
       setState(() {
         _messages.last = ChatMessage(
-          text: "Model not found. Please go to Model Management to download it.",
+          text:
+              "Model not found. Please go to Model Management to download it.",
           isUser: false,
         );
         _isLoading = false;
@@ -49,8 +50,9 @@ class _ChatScreenState extends State<ChatScreen> {
       _messages.last = ChatMessage(text: "Loading model...", isUser: false);
     });
 
-    final success = await _llamaService.loadModel(_modelManager.modelFile!.path);
-    
+    final success =
+        await _llamaService.loadModel(_modelManager.modelFile!.path);
+
     setState(() {
       if (success) {
         _messages.last = ChatMessage(
@@ -68,7 +70,9 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _sendMessage() async {
-    if (_promptController.text.trim().isEmpty || _isGenerating || !_llamaService.isInitialized) {
+    if (_promptController.text.trim().isEmpty ||
+        _isGenerating ||
+        !_llamaService.isInitialized) {
       return;
     }
 
@@ -187,8 +191,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 const SizedBox(width: 8),
                 FloatingActionButton(
-                  onPressed: (_isLoading || _isGenerating || !_llamaService.isInitialized) 
-                      ? null 
+                  onPressed: (_isLoading ||
+                          _isGenerating ||
+                          !_llamaService.isInitialized)
+                      ? null
                       : _sendMessage,
                   mini: true,
                   child: const Icon(Icons.send),

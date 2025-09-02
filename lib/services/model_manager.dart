@@ -10,9 +10,10 @@ enum ModelStatus {
 }
 
 class ModelManager {
-  static const String modelUrl = 'https://huggingface.co/ggml-org/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf';
+  static const String modelUrl =
+      'https://huggingface.co/ggml-org/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q4_K_M.gguf';
   static const String modelFileName = 'gemma-3-1b-it-Q4_K_M.gguf';
-  
+
   ModelStatus _status = ModelStatus.notDownloaded;
   double _downloadProgress = 0.0;
   String _errorMessage = '';
@@ -27,7 +28,7 @@ class ModelManager {
     try {
       final appDir = await getApplicationDocumentsDirectory();
       _modelFile = File('${appDir.path}/$modelFileName');
-      
+
       if (await _modelFile!.exists()) {
         _status = ModelStatus.downloaded;
       } else {
@@ -39,17 +40,18 @@ class ModelManager {
     }
   }
 
-  Future<void> downloadModel({Function(double)? onProgress, Function(String)? onError}) async {
+  Future<void> downloadModel(
+      {Function(double)? onProgress, Function(String)? onError}) async {
     try {
       _status = ModelStatus.downloading;
       _downloadProgress = 0.0;
-      
+
       final appDir = await getApplicationDocumentsDirectory();
       _modelFile = File('${appDir.path}/$modelFileName');
-      
+
       final request = http.Request('GET', Uri.parse(modelUrl));
       final response = await request.send();
-      
+
       if (response.statusCode != 200) {
         throw Exception('HTTP ${response.statusCode}');
       }
@@ -61,7 +63,7 @@ class ModelManager {
       await for (final chunk in response.stream) {
         bytes.addAll(chunk);
         downloadedBytes += chunk.length;
-        
+
         if (totalBytes > 0) {
           _downloadProgress = downloadedBytes / totalBytes;
           onProgress?.call(_downloadProgress);
@@ -70,7 +72,6 @@ class ModelManager {
 
       await _modelFile!.writeAsBytes(bytes);
       _status = ModelStatus.downloaded;
-      
     } catch (e) {
       _status = ModelStatus.error;
       _errorMessage = 'Download failed: $e';

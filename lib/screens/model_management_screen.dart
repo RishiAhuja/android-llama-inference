@@ -79,7 +79,8 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
             const Spacer(),
             if (_modelManager.status == ModelStatus.downloaded)
               ElevatedButton(
-                onPressed: () => Navigator.pushReplacementNamed(context, '/chat'),
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, '/chat'),
                 child: const Text('Start Chatting'),
               ),
           ],

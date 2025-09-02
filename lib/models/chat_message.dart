@@ -4,7 +4,7 @@ class ChatMessage {
   final DateTime timestamp;
 
   ChatMessage({
-    required this.text, 
+    required this.text,
     required this.isUser,
     DateTime? timestamp,
   }) : timestamp = timestamp ?? DateTime.now();

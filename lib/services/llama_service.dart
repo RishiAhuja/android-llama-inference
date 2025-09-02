@@ -14,7 +14,7 @@ class LlamaService {
       final pathC = modelPath.toNativeUtf8();
       _context = _ffi.loadModel(pathC);
       calloc.free(pathC);
-      
+
       _isInitialized = _context != null && _context!.address != 0;
       return _isInitialized;
     } catch (e) {
@@ -35,7 +35,7 @@ class LlamaService {
 
       final result = resultPtr.toDartString();
       _ffi.freeString(resultPtr);
-      
+
       return result;
     } catch (e) {
       return 'Error generating response: $e';

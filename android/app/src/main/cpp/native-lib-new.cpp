@@ -63,25 +63,26 @@ extern "C" {
 
         // Reset the batch for new inference
         wrapper->batch.n_tokens = 0;
+        
+        // Clear KV cache
+        llama_kv_cache_clear(wrapper->context);
 
         // Tokenize the prompt using modern API
         std::vector<llama_token> tokens_list;
         tokens_list.resize(llama_n_ctx(wrapper->context));
         
-        // Get vocab from model - correct API usage
-        const llama_vocab* vocab = llama_model_get_vocab(wrapper->model);
-        if (vocab == nullptr) {
-            return string_to_char_ptr("Failed to get vocab");
-        }
-        
-        // Use the correct tokenization function
-        int n_tokens = llama_tokenize(vocab, prompt, strlen(prompt), tokens_list.data(), tokens_list.size(), true, false);
+        // Get model vocab for tokenization
+        int n_tokens = llama_tokenize(wrapper->model, prompt, strlen(prompt), tokens_list.data(), tokens_list.size(), true, false);
         if (n_tokens < 0) {
             return string_to_char_ptr("Failed to tokenize prompt");
         }
         
         // Add prompt tokens to the batch manually
         for (int i = 0; i < n_tokens; i++) {
+            if (wrapper->batch.n_tokens >= wrapper->batch.n_tokens_alloc) {
+                return string_to_char_ptr("Batch overflow");
+            }
+            
             wrapper->batch.token[wrapper->batch.n_tokens] = tokens_list[i];
             wrapper->batch.pos[wrapper->batch.n_tokens] = i;
             wrapper->batch.n_seq_id[wrapper->batch.n_tokens] = 1;
@@ -102,38 +103,32 @@ extern "C" {
 
         std::string response = "";
         int n_cur = n_tokens;
-        int n_len = 20; // Generate up to 20 tokens for testing
-
-        auto n_vocab = llama_vocab_n_tokens(vocab);
+        int n_len = 100; // Generate up to 100 tokens
 
         // Generation loop
         for (int i = 0; i < n_len; i++) {
             // Get logits for the last token
             auto* logits = llama_get_logits_ith(wrapper->context, wrapper->batch.n_tokens - 1);
-            if (logits == nullptr) {
-                break;
-            }
+            auto n_vocab = llama_n_vocab(wrapper->model);
 
-            // Simple greedy sampling with safety limit
+            // Simple greedy sampling
             llama_token new_token_id = 0;
             float max_logit = logits[0];
-            
-            // Limit vocab search to prevent hanging - max 50k tokens
-            int vocab_limit = std::min(n_vocab, 50000);
-            for (int j = 1; j < vocab_limit; j++) {
+            for (int j = 1; j < n_vocab; j++) {
                 if (logits[j] > max_logit) {
                     max_logit = logits[j];
                     new_token_id = j;
                 }
             }
 
-            if (new_token_id == llama_vocab_eos(vocab)) {
+            // Check for end of sequence
+            if (new_token_id == llama_token_eos(wrapper->model)) {
                 break;
             }
 
             // Convert token to text
             char piece[256];
-            int n_chars = llama_token_to_piece(vocab, new_token_id, piece, sizeof(piece), 0, false);
+            int n_chars = llama_token_to_piece(wrapper->model, new_token_id, piece, sizeof(piece), 0, false);
             if (n_chars > 0) {
                 piece[n_chars] = '\0';
                 response += std::string(piece);
@@ -179,4 +174,3 @@ extern "C" {
         llama_backend_free();
     }
 }
-
