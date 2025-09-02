@@ -1,0 +1,11 @@
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/CMakeLists.txt
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/CMakeLists.txt
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/build-info.cmake
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/common.cmake
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/cmake/llama-config.cmake.in
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/CMakeLists.txt
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/common.cmake
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/cmake/ggml-config.cmake.in
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/CMakeLists.txt
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/ggml/src/ggml-cpu/CMakeLists.txt
+/home/rishi/StudioProjects/gemma_app/android/app/src/main/cpp/llama.cpp/src/CMakeLists.txt
