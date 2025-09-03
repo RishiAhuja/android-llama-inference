@@ -1,267 +1,259 @@
-# Gemma AI Assistant - Flutter Mobile App
+# On-Device Language Model Inference with Flutter and llama.cpp
 
-A Flutter application that runs Google's Gemma and other small language models on-device using llama.cpp with GPU acceleration support via Vulkan.
+A Flutter implementation for running quantized GGUF language models on Android devices using llama.cpp with Vulkan GPU acceleration.
 
-## Overview
+## Technical Overview
 
-This application provides a native mobile chat interface for running small instruction-tuned language models (under 1B parameters) directly on Android devices. The app features efficient on-device inference, model management, and GPU acceleration capabilities optimized for mobile hardware.
+This project implements a mobile application that performs local language model inference without network dependencies. The architecture integrates Flutter's Dart runtime with llama.cpp's C++ inference engine through FFI (Foreign Function Interface), enabling deployment of sub-1B parameter models on resource-constrained mobile hardware.
 
-## Features
+## Implementation Details
 
-### Core Functionality
-- **On-Device Inference**: Run language models completely offline without internet connectivity
-- **GPU Acceleration**: Vulkan-based GPU acceleration for improved inference speed
-- **Multiple Model Support**: Download and switch between various small language models
-- **Streaming Inference**: Non-blocking UI with real-time response generation
-- **Memory Management**: Intelligent memory usage with chunked model downloading
-- **Response Time Tracking**: Display inference performance metrics
+### Core Architecture
 
-### Supported Models
-- Gemma 3 1B Instruct (Recommended)
-- Gemma 3 270M Instruct (Ultra-lightweight)
-- Llama 3.2 1B Instruct (Edge-optimized)
-- Qwen2.5 0.5B Instruct (Multilingual)
-- Lille 130M Instruct (Minimal footprint)
-- TinyLlama 1.1B Chat (Compact chat model)
-- TinyLlama 2 1B MiniGuanaco (Instruction-tuned)
-- TinyVicuna 1B (Dialogue-optimized)
+**Frontend Layer (Dart/Flutter)**
+- Isolate-based asynchronous inference to prevent UI blocking
+- FFI bindings for native library communication
+- Streaming model download with chunked file writing
+- Memory-aware model lifecycle management
 
-### User Interface
-- **Model Management Screen**: Browse, download, and manage language models
-- **Chat Interface**: Clean, modern chat UI with typing indicators
-- **GPU Toggle**: Switch between GPU and CPU-only inference modes
-- **Download Progress**: Real-time download progress with cancellation support
-- **Confirmation Dialogs**: Safe model deletion with user confirmation
+**Native Layer (C++/llama.cpp)**
+- GGUF format model loading with mmap support
+- Vulkan compute backend for GPU acceleration
+- Batch processing for prompt tokenization
+- Context management with KV cache optimization
 
-## Architecture
+**Build System**
+- CMake configuration with Vulkan backend compilation
+- Android NDK integration with ARM64 NEON optimizations
+- Cross-compilation for aarch64-linux-android target
 
-### Technology Stack
-- **Frontend**: Flutter (Dart)
-- **Backend**: llama.cpp (C++)
-- **FFI**: Dart Foreign Function Interface for native integration
-- **Build System**: CMake for native library compilation
-- **GPU Backend**: Vulkan for Android GPU acceleration
+### Memory Management
 
-### Key Components
+The implementation addresses mobile memory constraints through:
 
-#### Dart/Flutter Layer
-- `LlamaService`: High-level service for model operations
-- `ModelManager`: Handles model downloading, loading, and lifecycle
-- `LlamaFFI`: Foreign Function Interface bindings to native library
-- `ChatScreen`: Main chat interface with async inference
-- `ModelManagementScreen`: Model browsing and management UI
-- `GpuSettings`: Global GPU acceleration configuration
+- **Streaming Downloads**: HTTP response streaming with direct-to-disk writing
+- **Model Loading**: Memory-mapped file access to reduce RAM usage
+- **Context Pooling**: Reusable inference contexts with batch allocation
+- **Garbage Collection**: Explicit cleanup of native resources
 
-#### Native C++ Layer
-- `native-lib.cpp`: JNI bridge and llama.cpp integration
-- Model loading with GPU/CPU configuration
-- Efficient batch processing for prompt inference
-- Memory-optimized context management
-- Chat template formatting for different model types
+### GPU Acceleration
 
-#### Build Configuration
-- `CMakeLists.txt`: Native library build configuration with Vulkan support
-- Gradle integration for Android builds
-- ARM64 optimization flags for mobile performance
+Vulkan integration provides compute acceleration through:
 
-## Installation and Setup
+```cpp
+// Model parameters for GPU offloading
+mparams.n_gpu_layers = 99;  // Offload all compatible layers
+cparams.n_threads = 2;      // Reduced CPU threads when using GPU
+```
+
+GPU layer offloading automatically detects device capabilities and falls back to CPU processing for unsupported operations.
+
+## Supported Model Formats
+
+All models must be in GGUF format with Q4_K_M quantization for optimal mobile performance:
+
+| Model | Parameters | Size (MB) | Context | Use Case |
+|-------|------------|-----------|---------|----------|
+| gemma-3-1b-it | 1B | 800 | 1024 | General instruction following |
+| gemma-3-270m-it | 270M | 200 | 1024 | Minimal resource usage |
+| llama-3.2-1b | 1B | 700 | 1024 | Edge-optimized inference |
+| qwen2.5-0.5b | 500M | 350 | 1024 | Multilingual support |
+| lille-130m | 130M | 120 | 1024 | Ultra-low resource environments |
+
+## Build Configuration
 
 ### Prerequisites
-- Flutter SDK (3.0 or higher)
-- Android Studio with NDK
-- Android device with API level 23+ (Android 6.0+)
-- Minimum 3GB RAM recommended for model loading
-- ARM64 device architecture (arm64-v8a)
 
-### Build Instructions
+- Flutter SDK 3.0+
+- Android NDK 26.1.10909125
+- CMake 3.22.1+
+- Git with submodule support
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd gemma_app
-   ```
+### Compilation Flags
 
-2. **Initialize llama.cpp submodule**
-   ```bash
-   git submodule update --init --recursive
-   ```
+```cmake
+# ARM64 optimization
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=armv8.2-a+fp16")
 
-3. **Install Flutter dependencies**
-   ```bash
-   flutter pub get
-   ```
+# Vulkan backend
+set(LLAMA_VULKAN ON CACHE BOOL "Enable Vulkan support")
 
-4. **Build and run**
-   ```bash
-   flutter run
-   ```
-
-### Android Build Configuration
-
-The app includes optimized build settings for mobile devices:
-
-- **ARM64 Optimization**: FP16 NEON instruction support
-- **Vulkan GPU Support**: Hardware-accelerated inference
-- **Memory Mapping**: Efficient model file access
-- **Batch Processing**: Parallel token processing for speed
-
-## Usage Guide
-
-### Getting Started
-
-1. **Launch the App**: Start with the Model Management screen
-2. **Download a Model**: Select and download your preferred language model
-3. **Configure GPU**: Toggle GPU acceleration based on your device capabilities
-4. **Start Chatting**: Navigate to the chat interface and begin conversations
-
-### Model Selection Guidelines
-
-- **Gemma 3 1B**: Best balance of quality and performance (Recommended)
-- **Gemma 3 270M**: Fastest inference, basic capabilities
-- **Qwen2.5 0.5B**: Good multilingual support
-- **Lille 130M**: Minimal resource usage for low-end devices
-
-### Performance Optimization
-
-#### GPU Acceleration
-- Enable for devices with modern GPUs (Adreno 640+, Mali-G76+)
-- Disable for older devices or if experiencing stability issues
-- Monitor battery usage as GPU acceleration may increase power consumption
-
-#### Memory Management
-- Models are downloaded in chunks to prevent out-of-memory errors
-- Only one model is kept in memory at a time
-- Automatic memory checks before model loading
-
-#### Inference Settings
-- Context size: 1024 tokens (configurable)
-- Batch size: 512 tokens for efficient processing
-- Thread count: Auto-configured based on CPU/GPU mode
-
-## Development
-
-### Project Structure
-
-```
-lib/
-├── main.dart                    # App entry point and routing
-├── models/
-│   ├── chat_message.dart        # Chat message data model
-│   └── model_config.dart        # Model configuration and GPU settings
-├── screens/
-│   ├── chat_screen.dart         # Main chat interface
-│   └── model_management_screen.dart # Model management UI
-└── services/
-    ├── llama_ffi.dart          # FFI bindings to native library
-    ├── llama_service.dart      # High-level model service
-    └── model_manager.dart      # Model download and lifecycle
-
-android/app/src/main/cpp/
-├── CMakeLists.txt              # Native build configuration
-├── native-lib.cpp              # C++ implementation
-└── llama.cpp/                  # llama.cpp submodule
+# Memory optimization
+set(LLAMA_NATIVE OFF CACHE BOOL "Disable native optimizations")
 ```
 
-### Adding New Models
+### Build Process
 
-1. **Update Model Configuration**
-   ```dart
-   ModelConfig(
-     id: 'new-model-id',
-     name: 'New Model Name',
-     description: 'Model description',
-     url: 'https://huggingface.co/model/file.gguf',
-     fileName: 'model.gguf',
-     sizeInMB: 500,
-     capabilities: ['Chat', 'Code'],
-     isRecommended: false,
-   )
-   ```
+```bash
+git submodule update --init --recursive
+flutter pub get
+flutter build apk --release
+```
 
-2. **Test Compatibility**
-   - Ensure model uses GGUF format
-   - Verify model size fits device constraints
-   - Test inference quality and speed
+## Runtime Configuration
 
-### Debugging
+### Inference Parameters
 
-#### Common Issues
-- **Out of Memory**: Reduce model size or enable streaming download
-- **Slow Inference**: Enable GPU acceleration or use smaller model
-- **Build Errors**: Ensure NDK version compatibility and submodule initialization
+```cpp
+// Context configuration
+cparams.n_ctx = 1024;           // Token context window
+cparams.n_batch = 512;          // Batch size for parallel processing
+cparams.n_ubatch = 512;         // Micro-batch size
+cparams.n_threads = 4;          // CPU thread count (auto-adjusted for GPU)
+```
 
-#### Logging
-- Native layer logs via Android logcat with tag "LlamaJNI"
-- Dart layer logging through Flutter's debug console
-- Performance metrics displayed in chat interface
+### Sampling Configuration
 
-## Performance Benchmarks
+```cpp
+// Sampling chain
+llama_sampler_chain_add(sampler, llama_sampler_init_top_k(40));
+llama_sampler_chain_add(sampler, llama_sampler_init_top_p(0.9f, 1));
+llama_sampler_chain_add(sampler, llama_sampler_init_temp(0.7f));
+```
 
-### Inference Speed (tokens/second)
-- **GPU Mode**: 15-25 tokens/sec (varies by device)
-- **CPU Mode**: 5-15 tokens/sec (varies by model size and device)
+### Memory Requirements
 
-### Memory Usage
-- **Model Loading**: 800MB-1.2GB (depends on model size)
-- **Runtime Overhead**: 100-200MB
-- **Peak Usage**: During model loading and inference
+- **Minimum RAM**: 3GB (2GB for model + 1GB system overhead)
+- **Recommended RAM**: 4GB+ for stable operation
+- **Storage**: 1-2GB per model (varies by quantization)
 
-### Battery Impact
-- **CPU Mode**: Moderate battery usage
-- **GPU Mode**: Higher battery usage but faster inference
-- **Idle**: Minimal battery impact when not inferencing
+### Memory Usage Patterns
 
-## Contributing
+```
+Model Loading Phase:
+├── File mapping: 800MB-1.2GB
+├── Context allocation: 100-200MB
+└── Batch buffers: 50-100MB
 
-### Development Guidelines
-- Follow Flutter/Dart style conventions
-- Test on multiple Android devices and API levels
-- Ensure memory efficiency for mobile constraints
-- Maintain compatibility with llama.cpp updates
+Inference Phase:
+├── KV cache: 50-150MB (grows with context)
+├── Attention computation: 100-300MB (temporary)
+└── Token generation: 10-50MB
+```
 
-### Testing
-- Test model downloading and loading
-- Verify inference quality across different models
-- Check memory usage patterns
-- Validate GPU/CPU switching functionality
+## API Reference
 
-## License
+### FFI Interface
 
-This project integrates multiple open-source components:
-- Flutter framework (BSD License)
-- llama.cpp library (MIT License)
-- Model weights subject to their respective licenses
+```dart
+typedef LoadModelWithGpuNative = Pointer<LlamaOpaque> Function(
+    Pointer<Utf8> modelPath, Bool useGpu);
 
-## Acknowledgments
+typedef PredictNative = Pointer<Utf8> Function(
+    Pointer<LlamaOpaque> context, Pointer<Utf8> prompt);
+```
 
-- **llama.cpp**: Core inference engine
-- **Google**: Gemma model architecture
-- **Meta**: Llama model architecture
-- **Alibaba**: Qwen model contributions
-- **Flutter Team**: Mobile framework
+### Service Layer
 
-## Troubleshooting
+```dart
+class LlamaService {
+  Future<bool> loadModel(String modelPath, {bool useGpu = true});
+  Future<String> generateResponse(String prompt);
+  void resetConversation();
+  void dispose();
+}
+```
 
-### Common Solutions
+### Model Management
 
-**App crashes on model loading**
-- Check available device memory
-- Try smaller model or enable GPU acceleration
-- Restart app to clear memory
+```dart
+class ModelManager {
+  Future<void> downloadModel(String modelId, {
+    Function(double)? onProgress,
+    Function(String)? onError,
+  });
+  Future<void> deleteModel(String modelId);
+  Future<List<String>> getDownloadedModels();
+}
+```
 
-**Slow download speeds**
-- Check internet connection
-- Try downloading during off-peak hours
-- Use WiFi instead of mobile data
+## Error Handling
 
-**GPU acceleration not working**
-- Verify device has Vulkan support
-- Update device drivers if possible
-- Fall back to CPU mode
+### Common Failure Modes
 
-**Build failures**
-- Clean build directory: `flutter clean`
-- Rebuild native components
-- Check NDK version compatibility
+**Memory allocation failures:**
+```
+I/LlamaJNI: Failed to allocate context memory
+E/LlamaJNI: Model loading failed: insufficient memory
+```
 
-For additional support and updates, refer to the project repository and documentation.
+**GPU initialization failures:**
+```
+W/LlamaJNI: Vulkan device not found, falling back to CPU
+I/LlamaJNI: GPU acceleration disabled
+```
+
+**Model format errors:**
+```
+E/LlamaJNI: Invalid GGUF header
+E/LlamaJNI: Unsupported quantization format
+```
+
+### Recovery Mechanisms
+
+- Automatic GPU fallback to CPU on device incompatibility
+- Progressive memory pressure handling with context reduction
+- Model download resume on network interruption
+- Graceful degradation for unsupported architectures
+
+## Debugging and Profiling
+
+### Native Layer Debugging
+
+```bash
+adb logcat | grep LlamaJNI
+```
+
+### Memory Profiling
+
+```bash
+adb shell dumpsys meminfo com.example.gemma_app
+```
+
+### Performance Analysis
+
+```cpp
+// Timing inference
+auto start = std::chrono::high_resolution_clock::now();
+llama_decode(ctx, batch);
+auto end = std::chrono::high_resolution_clock::now();
+LOGI("Decode time: %ldms", duration_cast<milliseconds>(end - start).count());
+```
+
+## Security Considerations
+
+- Models execute in application sandbox
+- No network access during inference
+- Local file system access only to app directories
+- Native code compiled with stack protection enabled
+
+## Platform Limitations
+
+- **Android API 23+**: Required for NDK features
+- **ARM64 only**: No x86/x86_64 support
+- **Vulkan 1.0+**: For GPU acceleration
+- **64-bit only**: 32-bit architectures unsupported
+
+## Optimization Techniques
+
+### Quantization Strategy
+- Q4_K_M: Optimal balance of size and quality
+- Mixed precision: FP16 for attention, INT4 for weights
+- Dynamic quantization: Runtime precision adjustment
+
+### Context Management
+- Sliding window attention for long conversations
+- KV cache compression for memory efficiency
+- Batch processing for parallel token generation
+
+### Threading Model
+- CPU threads: 2-4 cores depending on GPU usage
+- GPU work queues: Asynchronous compute dispatch
+- Dart isolates: Background inference without UI blocking
+
+## License and Dependencies
+
+- **llama.cpp**: MIT License
+- **Flutter**: BSD 3-Clause License
+- **Vulkan SDK**: Apache 2.0 License
+- **Model weights**: Individual model licenses apply
