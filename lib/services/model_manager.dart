@@ -16,6 +16,7 @@ class ModelManager {
   String _errorMessage = '';
   File? _modelFile;
   ModelConfig? _currentModel;
+  bool _downloadCancelled = false;
 
   ModelStatus get status => _status;
   double get downloadProgress => _downloadProgress;
@@ -70,38 +71,109 @@ class ModelManager {
       _currentModel = model;
       _status = ModelStatus.downloading;
       _downloadProgress = 0.0;
+      _downloadCancelled = false; // Reset cancellation flag
 
       final appDir = await getApplicationDocumentsDirectory();
       _modelFile = File('${appDir.path}/${model.fileName}');
 
-      final request = http.Request('GET', Uri.parse(model.url));
-      final response = await request.send();
-
-      if (response.statusCode != 200) {
-        throw Exception('HTTP ${response.statusCode}');
+      // Check if partial download exists and try to resume
+      var startByte = 0;
+      if (await _modelFile!.exists()) {
+        startByte = await _modelFile!.length();
+        print('Resuming download from byte $startByte');
       }
 
-      final totalBytes = response.contentLength ?? 0;
-      var downloadedBytes = 0;
-      final bytes = <int>[];
+      // Create the file and open it for writing (append mode if resuming)
+      final sink = _modelFile!.openWrite(mode: startByte > 0 ? FileMode.append : FileMode.write);
 
-      await for (final chunk in response.stream) {
-        bytes.addAll(chunk);
-        downloadedBytes += chunk.length;
-
-        if (totalBytes > 0) {
-          _downloadProgress = downloadedBytes / totalBytes;
-          onProgress?.call(_downloadProgress);
+      try {
+        final request = http.Request('GET', Uri.parse(model.url));
+        
+        // Add range header for resume capability
+        if (startByte > 0) {
+          request.headers['Range'] = 'bytes=$startByte-';
         }
-      }
+        
+        // Add user-agent for better compatibility
+        request.headers['User-Agent'] = 'FlutterApp/1.0';
+        
+        // Set timeout for the request
+        final client = http.Client();
+        final response = await client.send(request).timeout(
+          const Duration(minutes: 30), // 30-minute timeout
+          onTimeout: () {
+            client.close();
+            throw Exception('Download timeout - please check your internet connection');
+          },
+        );
 
-      await _modelFile!.writeAsBytes(bytes);
-      _status = ModelStatus.downloaded;
+        // Accept both 200 (full download) and 206 (partial content/resume)
+        if (response.statusCode != 200 && response.statusCode != 206) {
+          throw Exception('HTTP ${response.statusCode}: ${response.reasonPhrase}');
+        }
+
+        final totalBytes = (response.contentLength ?? 0) + startByte;
+        var downloadedBytes = startByte;
+        
+        print('Download started: ${downloadedBytes}/${totalBytes} bytes');
+
+        // Stream download with chunked writing to disk
+        await for (final chunk in response.stream) {
+          // Check if download is cancelled
+          if (_downloadCancelled) {
+            sink.close();
+            await _modelFile!.delete();
+            _status = ModelStatus.notDownloaded;
+            print('Download cancelled');
+            return;
+          }
+
+          // Write chunk directly to file (no memory accumulation)
+          sink.add(chunk);
+          downloadedBytes += chunk.length;
+
+          if (totalBytes > 0) {
+            _downloadProgress = downloadedBytes / totalBytes;
+            onProgress?.call(_downloadProgress);
+          }
+
+          // Periodically flush to disk to avoid large write buffers
+          if (downloadedBytes % (1024 * 1024) == 0) { // Flush every 1MB
+            await sink.flush();
+          }
+        }
+
+        // Ensure all data is written to disk
+        await sink.flush();
+        await sink.close();
+        
+        // Verify file size matches expected size
+        final finalSize = await _modelFile!.length();
+        if (totalBytes > 0 && finalSize != totalBytes) {
+          throw Exception('Download incomplete: ${finalSize}/${totalBytes} bytes');
+        }
+        
+        print('Download completed successfully: $finalSize bytes');
+        _status = ModelStatus.downloaded;
+      } catch (e) {
+        // Clean up the file sink and remove partial file on error
+        await sink.close();
+        if (await _modelFile!.exists()) {
+          await _modelFile!.delete();
+        }
+        rethrow;
+      }
     } catch (e) {
       _status = ModelStatus.error;
       _errorMessage = 'Download failed: $e';
       onError?.call(_errorMessage);
     }
+  }
+
+  void cancelDownload() {
+    _downloadCancelled = true;
+    _status = ModelStatus.notDownloaded;
+    _downloadProgress = 0.0;
   }
 
   Future<void> deleteModel([String? modelId]) async {

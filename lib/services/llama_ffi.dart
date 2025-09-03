@@ -7,6 +7,8 @@ final class LlamaOpaque extends Opaque {}
 
 typedef LoadModelNative = Pointer<LlamaOpaque> Function(
     Pointer<Utf8> modelPath);
+typedef LoadModelWithGpuNative = Pointer<LlamaOpaque> Function(
+    Pointer<Utf8> modelPath, Bool useGpu);
 typedef PredictNative = Pointer<Utf8> Function(
     Pointer<LlamaOpaque> context, Pointer<Utf8> prompt);
 typedef FreeStringNative = Void Function(Pointer<Utf8> str);
@@ -14,6 +16,8 @@ typedef FreeModelNative = Void Function(Pointer<LlamaOpaque> context);
 typedef ResetConversationNative = Void Function(Pointer<LlamaOpaque> context);
 
 typedef LoadModelDart = Pointer<LlamaOpaque> Function(Pointer<Utf8> modelPath);
+typedef LoadModelWithGpuDart = Pointer<LlamaOpaque> Function(
+    Pointer<Utf8> modelPath, bool useGpu);
 typedef PredictDart = Pointer<Utf8> Function(
     Pointer<LlamaOpaque> context, Pointer<Utf8> prompt);
 typedef FreeStringDart = void Function(Pointer<Utf8> str);
@@ -23,6 +27,7 @@ typedef ResetConversationDart = void Function(Pointer<LlamaOpaque> context);
 class LlamaFFI {
   late final DynamicLibrary _lib;
   late final LoadModelDart loadModel;
+  late final LoadModelWithGpuDart loadModelWithGpu;
   late final PredictDart predict;
   late final FreeStringDart freeString;
   late final FreeModelDart freeModel;
@@ -36,6 +41,10 @@ class LlamaFFI {
     loadModel = _lib
         .lookup<NativeFunction<LoadModelNative>>('load_model')
         .asFunction<LoadModelDart>();
+
+    loadModelWithGpu = _lib
+        .lookup<NativeFunction<LoadModelWithGpuNative>>('load_model_with_gpu')
+        .asFunction<LoadModelWithGpuDart>();
 
     predict = _lib
         .lookup<NativeFunction<PredictNative>>('predict')

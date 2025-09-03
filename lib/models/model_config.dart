@@ -23,8 +23,8 @@ class ModelConfig {
 class AvailableModels {
   static const List<ModelConfig> models = [
     ModelConfig(
-      id: 'gemma-3-1b-it',
-      name: 'Gemma 3 1B Instruct',
+      id: 'gemma-3-1b-it-q4',
+      name: 'Gemma 3 1B Q4 Instruct',
       description:
           'Google\'s Gemma 3 1B instruction-tuned model. Good balance of quality and speed.',
       url:
@@ -35,8 +35,20 @@ class AvailableModels {
       isRecommended: true,
     ),
     ModelConfig(
+      id: 'gemma-3-1b-it-q2',
+      name: 'Gemma 3 1B Q2 Instruct',
+      description:
+          'Google\'s Gemma 3 1B instruction-tuned model. Good balance of quality and speed.',
+      url:
+          'https://huggingface.co/unsloth/gemma-3-1b-it-GGUF/resolve/main/gemma-3-1b-it-Q2_K.gguf?download=true',
+      fileName: 'gemma-3-1b-it-Q2_K.gguf',
+      sizeInMB: 658,
+      capabilities: ['Chat', 'Question Answering', 'Text Generation'],
+      isRecommended: false,
+    ),
+    ModelConfig(
       id: 'gemma-3-270m-it',
-      name: 'Gemma 3 270M Instruct',
+      name: 'Gemma 3 270M Q4 Instruct',
       description:
           'Ultra-lightweight Google Gemma model. Very fast but basic capabilities.',
       url:
@@ -111,7 +123,6 @@ class AvailableModels {
       sizeInMB: 690,
       capabilities: ['Chat', 'Conversation', 'Text Generation'],
     ),
-
   ];
 
   static ModelConfig? getModelById(String id) {
@@ -123,4 +134,18 @@ class AvailableModels {
   }
 
   static ModelConfig get defaultModel => models.first;
+}
+
+class GpuSettings {
+  static bool _useGpu = true; // Default to GPU enabled
+
+  static bool get useGpu => _useGpu;
+
+  static void setGpuEnabled(bool enabled) {
+    _useGpu = enabled;
+  }
+
+  static String get statusText => _useGpu
+      ? 'GPU Acceleration: Enabled'
+      : 'GPU Acceleration: Disabled (CPU Only)';
 }

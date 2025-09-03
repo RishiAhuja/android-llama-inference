@@ -142,14 +142,18 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
                                 children: [
                                   Icon(
                                     Icons.info_outline,
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
                                     'Available Models',
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -157,6 +161,74 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
                               Text(
                                 'Download models to use for on-device inference. All models are under 1B parameters for optimal mobile performance.',
                                 style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              const SizedBox(height: 16),
+                              // GPU Toggle Section
+                              Container(
+                                padding: const EdgeInsets.all(12.0),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.surface,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .outline
+                                        .withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          GpuSettings.useGpu
+                                              ? Icons.memory
+                                              : Icons.developer_mode,
+                                          color: GpuSettings.useGpu
+                                              ? Colors.green
+                                              : Colors.orange,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Acceleration Mode',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleSmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
+                                        const Spacer(),
+                                        Tooltip(
+                                          message: GpuSettings.useGpu
+                                              ? 'Disable GPU acceleration\n(Uses more CPU but may be more stable)'
+                                              : 'Enable GPU acceleration\n(Uses Vulkan for faster inference)',
+                                          child: Switch(
+                                            value: GpuSettings.useGpu,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                GpuSettings.setGpuEnabled(
+                                                    value);
+                                              });
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(value
+                                                      ? 'GPU acceleration enabled - models will use Vulkan for faster inference'
+                                                      : 'CPU-only mode enabled - models will use CPU for inference'),
+                                                  duration: const Duration(
+                                                      seconds: 3),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -166,18 +238,21 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
                   }
 
                   final model = AvailableModels.models[index - 1];
-                  final isDownloaded = _downloadedModels.contains(model.fileName);
+                  final isDownloaded =
+                      _downloadedModels.contains(model.fileName);
                   final isDownloading = _isDownloading[model.id] ?? false;
                   final progress = _downloadProgress[model.id] ?? 0.0;
 
-                  return _buildModelCard(model, isDownloaded, isDownloading, progress);
+                  return _buildModelCard(
+                      model, isDownloaded, isDownloading, progress);
                 },
               ),
             ),
     );
   }
 
-  Widget _buildModelCard(ModelConfig model, bool isDownloaded, bool isDownloading, double progress) {
+  Widget _buildModelCard(ModelConfig model, bool isDownloaded,
+      bool isDownloading, double progress) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12.0),
       child: Padding(
@@ -195,18 +270,23 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
                         children: [
                           Text(
                             model.name,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           if (model.isRecommended) ...[
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                 color: Colors.green.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: Colors.green.withOpacity(0.3)),
+                                border: Border.all(
+                                    color: Colors.green.withOpacity(0.3)),
                               ),
                               child: Text(
                                 'Recommended',
@@ -229,8 +309,10 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
                       Text(
                         'Size: ${model.sizeInMB}MB',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
                       ),
                     ],
                   ),
@@ -242,14 +324,16 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
             Wrap(
               spacing: 6,
               runSpacing: 4,
-              children: model.capabilities.map((capability) => Chip(
-                label: Text(
-                  capability,
-                  style: const TextStyle(fontSize: 11),
-                ),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                visualDensity: VisualDensity.compact,
-              )).toList(),
+              children: model.capabilities
+                  .map((capability) => Chip(
+                        label: Text(
+                          capability,
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      ))
+                  .toList(),
             ),
             const SizedBox(height: 12),
             if (isDownloading) ...[
@@ -279,13 +363,29 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
     }
   }
 
-  Widget _buildActionButtons(ModelConfig model, bool isDownloaded, bool isDownloading) {
+  Widget _buildActionButtons(
+      ModelConfig model, bool isDownloaded, bool isDownloading) {
     if (isDownloading) {
-      return const SizedBox(
-        height: 36,
-        child: Center(
-          child: Text('Downloading...'),
-        ),
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              'Downloading...',
+              textAlign: TextAlign.center,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              _modelManager.cancelDownload();
+              _checkModelStatus(); // Refresh the UI
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Download cancelled')),
+              );
+            },
+            icon: const Icon(Icons.cancel, color: Colors.red),
+            tooltip: 'Cancel Download',
+          ),
+        ],
       );
     }
 
@@ -297,13 +397,15 @@ class _ModelManagementScreenState extends State<ModelManagementScreen> {
               onPressed: () {
                 _modelManager.setCurrentModel(model.id);
                 Navigator.pushReplacementNamed(
-                  context, 
+                  context,
                   '/chat',
                   arguments: {'modelId': model.id},
                 );
               },
-              icon: const Icon(Icons.chat),
-              label: const Text('Use Model'),
+              icon: Icon(
+                  GpuSettings.useGpu ? Icons.memory : Icons.developer_mode),
+              label: Text(
+                  GpuSettings.useGpu ? 'Use Model (GPU)' : 'Use Model (CPU)'),
             ),
           ),
           const SizedBox(width: 8),

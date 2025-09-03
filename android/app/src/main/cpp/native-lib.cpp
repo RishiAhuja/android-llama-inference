@@ -193,8 +193,8 @@ extern "C" {
     // ---- FFI Functions Exposed to Dart ----
 
     __attribute__((visibility("default"))) __attribute__((used))
-    void* load_model(const char* model_path) {
-        LOGI("Loading model from: %s", model_path);
+    void* load_model_with_gpu(const char* model_path, bool use_gpu) {
+        LOGI("Loading model from: %s (GPU: %s)", model_path, use_gpu ? "enabled" : "disabled");
         
         // Initialize backend once
         llama_backend_init();
@@ -205,6 +205,15 @@ extern "C" {
         llama_model_params mparams = llama_model_default_params();
         mparams.use_mmap = true;  // Use memory mapping for efficiency
         mparams.use_mlock = false; // Don't lock memory on mobile
+        
+        // GPU acceleration settings
+        if (use_gpu) {
+            mparams.n_gpu_layers = 10; // Offload some layers to GPU (will auto-limit based on VRAM)
+            LOGI("GPU acceleration enabled: offloading layers to GPU");
+        } else {
+            mparams.n_gpu_layers = 0; // CPU-only mode
+            LOGI("CPU-only mode enabled");
+        }
         
         // Load model
         wrapper->model = llama_model_load_from_file(model_path, mparams);
@@ -219,8 +228,19 @@ extern "C" {
         cparams.n_ctx = 1024;      // Reasonable context size
         cparams.n_batch = 512;     // Large batch size for efficient parallel processing
         cparams.n_ubatch = 512;
-        cparams.n_threads = 4;     // Use multiple CPU cores for matrix operations
-        cparams.n_threads_batch = 4; // Use multiple cores for batch processing
+        
+        if (use_gpu) {
+            // GPU-optimized settings
+            cparams.n_threads = 2;     // Fewer CPU threads when using GPU
+            cparams.n_threads_batch = 2;
+            LOGI("Using GPU-optimized thread configuration");
+        } else {
+            // CPU-optimized settings  
+            cparams.n_threads = 4;     // Use multiple CPU cores for matrix operations
+            cparams.n_threads_batch = 4; // Use multiple cores for batch processing
+            LOGI("Using CPU-optimized thread configuration");
+        }
+        
         cparams.rope_scaling_type = LLAMA_ROPE_SCALING_TYPE_UNSPECIFIED;
         cparams.pooling_type = LLAMA_POOLING_TYPE_UNSPECIFIED;
         cparams.attention_type = LLAMA_ATTENTION_TYPE_UNSPECIFIED;
@@ -261,6 +281,11 @@ extern "C" {
 
         LOGI("Model loaded successfully");
         return wrapper;
+    }
+
+    __attribute__((visibility("default"))) __attribute__((used))
+    void* load_model(const char* model_path) {
+        return load_model_with_gpu(model_path, true); // Default to GPU enabled
     }
 
     __attribute__((visibility("default"))) __attribute__((used))

@@ -654,6 +654,12 @@ LLAMA_LIB_INSTALL_DIR:PATH=lib
 // in common utils
 LLAMA_LLGUIDANCE:BOOL=OFF
 
+//Disable LTO for faster compilation
+LLAMA_LTO:BOOL=OFF
+
+//Disable native optimizations for broader compatibility
+LLAMA_NATIVE:BOOL=OFF
+
 //llama: enable address sanitizer
 LLAMA_SANITIZE_ADDRESS:BOOL=OFF
 
@@ -665,6 +671,9 @@ LLAMA_SANITIZE_UNDEFINED:BOOL=OFF
 
 //Use system libggml
 LLAMA_USE_SYSTEM_GGML:BOOL=OFF
+
+//Enable Vulkan support
+LLAMA_VULKAN:BOOL=ON
 
 //Path to a library.
 MATH_LIBRARY:FILEPATH=/home/rishi/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/23/libm.so

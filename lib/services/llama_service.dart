@@ -11,18 +11,33 @@ class LlamaService {
 
   bool get isInitialized => _isInitialized;
 
-  Future<bool> loadModel(String modelPath) async {
+  Future<bool> loadModel(String modelPath, {bool useGpu = true}) async {
     try {
       final pathC = modelPath.toNativeUtf8();
-      _context = _ffi.loadModel(pathC);
+      
+      // Use GPU-enabled loading if supported
+      _context = _ffi.loadModelWithGpu(pathC, useGpu);
       calloc.free(pathC);
 
       _isInitialized = _context != null && _context!.address != 0;
+      
+      if (_isInitialized) {
+        print('Model loaded successfully with GPU: $useGpu');
+      } else {
+        print('Failed to load model with GPU: $useGpu');
+      }
+      
       return _isInitialized;
     } catch (e) {
+      print('Error loading model: $e');
       _isInitialized = false;
       return false;
     }
+  }
+
+  // Fallback method for backward compatibility
+  Future<bool> loadModelCpuOnly(String modelPath) async {
+    return loadModel(modelPath, useGpu: false);
   }
 
   void resetConversation() {

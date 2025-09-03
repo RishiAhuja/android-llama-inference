@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/chat_message.dart';
+import '../models/model_config.dart';
 import '../services/llama_service.dart';
 import '../services/model_manager.dart';
 
@@ -57,12 +58,12 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     final success =
-        await _llamaService.loadModel(_modelManager.modelFile!.path);
+        await _llamaService.loadModel(_modelManager.modelFile!.path, useGpu: GpuSettings.useGpu);
 
     setState(() {
       if (success) {
         _messages.last = ChatMessage(
-          text: "Hello! I'm ${_modelManager.currentModel?.name ?? 'your AI assistant'}. How can I help you today?",
+          text: "Hello! I'm ${_modelManager.currentModel?.name ?? 'your AI assistant'}.\n\n${GpuSettings.statusText}\n\nHow can I help you today?",
           isUser: false,
         );
       } else {

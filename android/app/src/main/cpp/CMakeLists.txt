@@ -9,7 +9,18 @@ if(ANDROID_ABI STREQUAL "arm64-v8a")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=armv8.2-a+fp16")
 endif()
 
-# Add llama.cpp as a subdirectory. It will inherit the flags set above.
+# --- GPU OPTIMIZATION ---
+# This is the key line. It tells llama.cpp's build system to include the Vulkan backend,
+# which allows it to use the phone's GPU for acceleration.
+# This MUST come BEFORE add_subdirectory(llama.cpp).
+set(LLAMA_VULKAN ON CACHE BOOL "Enable Vulkan support")
+message(STATUS "Vulkan GPU support for llama.cpp has been enabled.")
+
+# Enable other GPU-related optimizations
+set(LLAMA_NATIVE OFF CACHE BOOL "Disable native optimizations for broader compatibility")
+set(LLAMA_LTO OFF CACHE BOOL "Disable LTO for faster compilation")
+
+# Add llama.cpp as a subdirectory. It will now be built with Vulkan support.
 add_subdirectory(llama.cpp)
 
 # Define our native library that bridges C++ to Dart.
